@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Olalekan Adepoju - PhD Researcher & Writing Specialist</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+    <!-- Firebase SDK v8 (simple and reliable) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #0f172a;
             --secondary: #1e293b;
@@ -26,14 +21,8 @@
             --text-light: #64748b;
             --border: #e2e8f0;
         }
-
         html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            line-height: 1.6;
-            background: var(--light-bg);
-        }
+        body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.6; background: var(--light-bg); }
 
         header {
             background: var(--primary);
@@ -51,7 +40,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1.5rem;
         }
 
         .logo {
@@ -66,13 +54,14 @@
             display: flex;
             gap: 2.5rem;
             flex: 1;
+            margin-left: 2rem;
         }
 
         nav a {
             color: var(--white);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         nav a:hover { color: var(--gold); }
@@ -80,46 +69,22 @@
         .auth-section {
             display: flex;
             gap: 1rem;
-            align-items: center;
         }
 
-        .login-btn {
-            background: var(--accent);
-            color: var(--white);
+        .login-btn, .logout-btn {
             padding: 0.6rem 1.2rem;
             border-radius: 6px;
             border: none;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
-            background: #b91c1c;
-            transform: translateY(-2px);
-        }
-
-        .logout-btn {
-            background: transparent;
-            color: var(--white);
-            padding: 0.6rem 1.2rem;
-            border: 1px solid var(--gold);
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .logout-btn:hover {
-            background: var(--gold);
-            color: var(--primary);
-        }
-
-        .user-info {
-            color: var(--gold);
-            font-weight: 600;
-        }
+        .login-btn { background: var(--accent); color: var(--white); }
+        .login-btn:hover { background: #b91c1c; }
+        .logout-btn { background: transparent; color: var(--white); border: 1px solid var(--gold); }
+        .logout-btn:hover { background: var(--gold); color: var(--primary); }
+        .user-info { color: var(--gold); font-weight: 600; }
 
         .modal {
             display: none;
@@ -134,36 +99,19 @@
             justify-content: center;
         }
 
-        .modal.active {
-            display: flex !important;
-        }
+        .modal.active { display: flex !important; }
 
         .modal-content {
             background: var(--white);
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             max-width: 450px;
             width: 90%;
             position: relative;
         }
 
-        .modal-close {
-            position: absolute;
-            right: 1.5rem;
-            top: 1.5rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .modal-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
+        .modal-close { position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.5rem; cursor: pointer; background: none; border: none; }
+        .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem; }
 
         .form-group {
             margin-bottom: 1.25rem;
@@ -176,9 +124,7 @@
             color: var(--primary);
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid var(--border);
@@ -187,18 +133,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .error-message {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 0.75rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
+        .error-message { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+        .error-message.show { display: block; }
 
         .btn-submit {
             width: 100%;
@@ -211,9 +147,7 @@
             cursor: pointer;
         }
 
-        .btn-submit:hover {
-            background: #b91c1c;
-        }
+        .btn-submit:hover { background: #b91c1c; }
 
         .demo-creds {
             background: var(--light-bg);
@@ -223,27 +157,14 @@
             font-size: 0.85rem;
         }
 
-        .demo-creds code {
-            background: var(--white);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        .section {
-            display: none;
-            padding: 4rem 0;
-        }
-
-        .section.active {
-            display: block;
-        }
+        .section { display: none; padding: 4rem 0; }
+        .section.active { display: block; }
 
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -253,16 +174,10 @@
             margin: -4rem 0 0 0;
         }
 
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
         .hero h1 {
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem;
             margin-bottom: 1rem;
-            line-height: 1.1;
         }
 
         .hero .subtitle {
@@ -296,19 +211,9 @@
             display: inline-block;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: #b91c1c;
-        }
-
-        .btn-consultation {
-            background: var(--gold);
-            color: var(--primary);
-        }
+        .btn-primary { background: var(--accent); color: var(--white); }
+        .btn-primary:hover { background: #b91c1c; }
+        .btn-consultation { background: var(--gold); color: var(--primary); }
 
         .section-title {
             font-family: 'Playfair Display', serif;
@@ -318,9 +223,7 @@
             text-align: center;
         }
 
-        .blog-list {
-            list-style: none;
-        }
+        .blog-list { list-style: none; }
 
         .blog-card {
             background: var(--white);
@@ -330,12 +233,9 @@
             border-left: 4px solid var(--accent);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .blog-card:hover {
-            transform: translateX(8px);
-        }
+        .blog-card:hover { transform: translateX(8px); }
 
         .blog-title {
             font-family: 'Playfair Display', serif;
@@ -364,15 +264,7 @@
             color: var(--text-light);
         }
 
-        .blog-excerpt {
-            color: var(--text-light);
-            line-height: 1.7;
-        }
-
-        .read-more {
-            color: var(--accent);
-            font-weight: 600;
-        }
+        .blog-excerpt { color: var(--text-light); line-height: 1.7; }
 
         .dashboard {
             background: var(--white);
@@ -425,13 +317,8 @@
             background: var(--accent);
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         .form-grid {
             display: grid;
@@ -440,24 +327,12 @@
             margin-bottom: 1.5rem;
         }
 
-        .form-grid.full {
-            grid-template-columns: 1fr;
-        }
+        .form-grid.full { grid-template-columns: 1fr; }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
+        .form-group textarea { resize: vertical; min-height: 120px; }
 
-        .image-preview {
-            margin-top: 1rem;
-            max-width: 250px;
-        }
-
-        .image-preview img {
-            width: 100%;
-            border-radius: 8px;
-        }
+        .image-preview { margin-top: 1rem; max-width: 250px; }
+        .image-preview img { width: 100%; border-radius: 8px; }
 
         .success-alert {
             background: #dcfce7;
@@ -468,9 +343,7 @@
             display: none;
         }
 
-        .success-alert.show {
-            display: block;
-        }
+        .success-alert.show { display: block; }
 
         .btn-group {
             display: flex;
@@ -488,9 +361,7 @@
             cursor: pointer;
         }
 
-        .btn-submit-form:hover {
-            background: #b91c1c;
-        }
+        .btn-submit-form:hover { background: #b91c1c; }
 
         .btn-reset {
             background: var(--light-bg);
@@ -502,9 +373,7 @@
             cursor: pointer;
         }
 
-        .posts-list {
-            list-style: none;
-        }
+        .posts-list { list-style: none; }
 
         .post-item {
             background: var(--light-bg);
@@ -517,15 +386,8 @@
             align-items: flex-start;
         }
 
-        .post-info h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .post-info p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
+        .post-info h4 { color: var(--primary); margin-bottom: 0.5rem; }
+        .post-info p { color: var(--text-light); font-size: 0.9rem; }
 
         .btn-delete {
             background: var(--accent);
@@ -538,9 +400,7 @@
             font-weight: 600;
         }
 
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
+        .btn-delete:hover { background: #b91c1c; }
 
         footer {
             background: var(--primary);
@@ -551,31 +411,34 @@
             border-top: 4px solid var(--accent);
         }
 
-        footer a {
-            color: var(--gold);
-            text-decoration: none;
+        footer a { color: var(--gold); text-decoration: none; }
+
+        .status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 999;
         }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .hero { padding: 4rem 1.5rem; }
-            .form-grid { grid-template-columns: 1fr; }
-            .cta-group { flex-direction: column; }
-            .cta-group .btn { width: 100%; }
-        }
+        .status.ok { background: #dcfce7; color: #166534; }
+        .status.warning { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
+    <div class="status warning" id="status">⏳ Initializing...</div>
+
     <header>
         <div class="nav-container">
             <a href="#" class="logo" onclick="goHome(); return false;">OA</a>
-            
             <nav>
-                <a href="#" onclick="goHome(); return false;">Home</a>
-                <a href="#" onclick="showSection('blog'); return false;">Blog</a>
+                <a onclick="goHome(); return false;">Home</a>
+                <a onclick="showSection('blog'); return false;">Blog</a>
             </nav>
-
             <div class="auth-section">
                 <div id="authContainer">
                     <button class="login-btn" onclick="openLoginModal()">Login</button>
@@ -584,165 +447,141 @@
         </div>
     </header>
 
-    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeLoginModal()">✕</button>
             <div class="modal-header">
                 <h2>Admin Login</h2>
-                <p>Access blog management dashboard</p>
             </div>
             <form onsubmit="handleLogin(event)">
                 <div class="error-message" id="errorMsg"></div>
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter username" required>
+                    <label>Username</label>
+                    <input type="text" id="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required>
+                    <label>Password</label>
+                    <input type="password" id="password" required>
                 </div>
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
             <div class="demo-creds">
-                <strong>Demo Credentials:</strong><br>
+                <strong>Demo:</strong><br>
                 Username: <code>admin</code><br>
                 Password: <code>password123</code>
             </div>
         </div>
     </div>
 
-    <!-- MAIN -->
     <div class="container">
-        <!-- HOME -->
         <section id="home" class="section active">
             <div class="hero">
-                <div class="hero-content">
-                    <h1>Olalekan Adepoju</h1>
-                    <p class="subtitle">PhD in Rhetoric & Composition</p>
-                    <p>Empowering writers through transnational pedagogy, decolonizing academic spaces, and leveraging multilingual assets.</p>
-                    <div class="cta-group">
-                        <a href="#" onclick="showSection('blog'); return false;" class="btn btn-primary">Read Blog</a>
-                        <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
-                    </div>
+                <h1>Olalekan Adepoju</h1>
+                <p class="subtitle">PhD in Rhetoric & Composition</p>
+                <p>Empowering writers through transnational pedagogy.</p>
+                <div class="cta-group">
+                    <a onclick="showSection('blog'); return false;" class="btn btn-primary">Read Blog</a>
+                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
                 </div>
             </div>
         </section>
 
-        <!-- BLOG -->
         <section id="blog" class="section">
             <h2 class="section-title">Blog</h2>
             <ul class="blog-list" id="blogList">
-                <li style="text-align: center; padding: 3rem; color: var(--text-light);">
-                    <p>📝 Loading posts...</p>
-                </li>
+                <li style="text-align: center; padding: 3rem;">Loading posts...</li>
             </ul>
         </section>
 
-        <!-- DASHBOARD -->
         <section id="dashboard" class="section">
             <div class="dashboard">
                 <div class="dashboard-header">
-                    <h2>Blog Management Dashboard</h2>
-                    <p>Create and manage your blog posts</p>
+                    <h2>Blog Management</h2>
                 </div>
 
                 <div class="tabs-container">
-                    <button class="tab-btn active" onclick="switchTab('createTab')">Create Post</button>
-                    <button class="tab-btn" onclick="switchTab('manageTabs')">Manage Posts</button>
+                    <button class="tab-btn active" onclick="switchTab(0)">Create Post</button>
+                    <button class="tab-btn" onclick="switchTab(1)">Manage Posts</button>
                 </div>
 
-                <!-- CREATE POST -->
-                <div id="createTab" class="tab-content active">
+                <div class="tab-content active">
                     <div class="success-alert" id="successAlert"></div>
                     <form onsubmit="createPost(event)">
                         <div class="form-grid full">
                             <div class="form-group">
-                                <label for="postTitle">Post Title *</label>
-                                <input type="text" id="postTitle" placeholder="Enter blog post title" required>
+                                <label>Post Title *</label>
+                                <input type="text" id="postTitle" required>
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="postDate">Publication Date *</label>
+                                <label>Date *</label>
                                 <input type="date" id="postDate" required>
                             </div>
                             <div class="form-group">
-                                <label for="postCategory">Category *</label>
+                                <label>Category *</label>
                                 <select id="postCategory" required>
-                                    <option value="">Select Category</option>
+                                    <option value="">Select</option>
                                     <option value="Writing Pedagogy">Writing Pedagogy</option>
                                     <option value="Composition Studies">Composition Studies</option>
-                                    <option value="International Writing">International Writing</option>
-                                    <option value="Language & Discourse">Language & Discourse</option>
-                                    <option value="Research Insights">Research Insights</option>
-                                    <option value="Teaching Tips">Teaching Tips</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-grid full">
                             <div class="form-group">
-                                <label for="postExcerpt">Excerpt *</label>
-                                <textarea id="postExcerpt" placeholder="Brief summary" required></textarea>
+                                <label>Excerpt *</label>
+                                <textarea id="postExcerpt" required></textarea>
                             </div>
                         </div>
 
                         <div class="form-grid full">
                             <div class="form-group">
-                                <label for="postImage">Featured Image (Optional)</label>
+                                <label>Featured Image</label>
                                 <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
                                 <div class="image-preview" id="imagePreview" style="display: none;">
-                                    <img id="previewImg" src="" alt="Preview">
-                                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">✓ Image selected</div>
+                                    <img id="previewImg" src="">
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-grid full">
                             <div class="form-group">
-                                <label for="postContent">Full Content *</label>
-                                <textarea id="postContent" placeholder="Write your blog post content..." required></textarea>
+                                <label>Content *</label>
+                                <textarea id="postContent" required></textarea>
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="postReadTime">Read Time (minutes) *</label>
+                                <label>Read Time (min) *</label>
                                 <input type="number" id="postReadTime" min="1" value="5" required>
                             </div>
                         </div>
 
                         <div class="btn-group">
-                            <button type="submit" class="btn-submit-form">Publish Post</button>
-                            <button type="reset" class="btn-reset">Clear Form</button>
+                            <button type="submit" class="btn-submit-form">Publish</button>
+                            <button type="reset" class="btn-reset">Clear</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- MANAGE POSTS -->
-                <div id="manageTabs" class="tab-content">
+                <div class="tab-content">
                     <ul class="posts-list" id="postsManageList">
-                        <li style="text-align: center; padding: 2rem;">No posts</li>
+                        <li style="text-align: center; padding: 2rem;">Loading...</li>
                     </ul>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- FOOTER -->
     <footer>
         <p><strong>Olalekan Tunde Adepoju, PhD</strong></p>
         <p>Educator | Researcher | Writing Specialist</p>
-        <p style="margin-top: 1rem;">
-            <a href="mailto:olalekanadepoju18@gmail.com">📧 Email</a> | 
-            <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank">📅 Book Consultation</a>
-        </p>
     </footer>
 
     <script>
-        // ==================== FIREBASE CONFIG ====================
         const firebaseConfig = {
             apiKey: "AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok",
             authDomain: "olalekan-adepoju.firebaseapp.com",
@@ -754,33 +593,62 @@
         };
 
         let db = null;
-        let firebaseReady = false;
+        let blogs = [];
+        let isLoggedIn = false;
 
-        // Initialize Firebase when SDK is ready
-        function initFirebase() {
-            if (typeof firebase === 'undefined') {
-                console.log('Waiting for Firebase SDK...');
-                setTimeout(initFirebase, 100);
-                return;
-            }
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
 
-            try {
-                if (firebase.apps.length === 0) {
-                    firebase.initializeApp(firebaseConfig);
+        console.log("✅ Firebase initialized!");
+        document.getElementById('status').textContent = '✅ Firebase Ready';
+        document.getElementById('status').classList.remove('warning');
+        document.getElementById('status').classList.add('ok');
+
+        function loadBlogs() {
+            db.ref('blogs').once('value', snapshot => {
+                if (snapshot.exists()) {
+                    blogs = Object.values(snapshot.val());
+                    console.log('✅ Loaded', blogs.length, 'posts from Firebase');
+                } else {
+                    blogs = getDefaultBlogs();
+                    console.log('No data in Firebase, using defaults');
                 }
-                db = firebase.database();
-                firebaseReady = true;
-                console.log('✅ Firebase initialized successfully!');
-            } catch (error) {
-                console.error('Firebase error:', error);
-                firebaseReady = false;
-                console.log('Using localStorage only');
-            }
+                updateBlogDisplay();
+            }, error => {
+                console.error('❌ Load error:', error);
+                blogs = getDefaultBlogs();
+                updateBlogDisplay();
+            });
         }
 
-        // ==================== AUTHENTICATION ====================
-        let isLoggedIn = false;
-        const VALID_CREDENTIALS = { username: 'admin', password: 'password123' };
+        function getDefaultBlogs() {
+            return [{
+                id: 1,
+                title: "Transnational Writing Pedagogy",
+                date: "2024-01-15",
+                category: "Writing Pedagogy",
+                excerpt: "Exploring writing center pedagogy.",
+                content: "Writing centers have traditionally focused on helping students conform to Standard English.",
+                readTime: 8,
+                views: 5,
+                image: null
+            }];
+        }
+
+        function saveBlogsToFirebase() {
+            const blogsObj = {};
+            blogs.forEach(blog => blogsObj[blog.id] = blog);
+            
+            db.ref('blogs').set(blogsObj, error => {
+                if (error) {
+                    console.error('❌ Save error:', error);
+                    showSuccess('❌ Failed to save');
+                } else {
+                    console.log('✅ Saved to Firebase!');
+                    showSuccess('✅ Post published!');
+                }
+            });
+        }
 
         function openLoginModal() {
             document.getElementById('loginModal').classList.add('active');
@@ -788,36 +656,29 @@
 
         function closeLoginModal() {
             document.getElementById('loginModal').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('errorMsg').classList.remove('show');
         }
 
         function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMsg');
 
-            if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
+            if (username === 'admin' && password === 'password123') {
                 isLoggedIn = true;
-                sessionStorage.setItem('userAuth', 'true');
                 closeLoginModal();
                 updateAuthUI();
                 showSection('dashboard');
                 showSuccess('✅ Logged in!');
             } else {
-                errorMsg.textContent = '❌ Invalid credentials';
-                errorMsg.classList.add('show');
+                document.getElementById('errorMsg').textContent = '❌ Invalid credentials';
+                document.getElementById('errorMsg').classList.add('show');
             }
         }
 
         function logout() {
             isLoggedIn = false;
-            sessionStorage.removeItem('userAuth');
             updateAuthUI();
-            goHome();
-            showSuccess('✅ Logged out');
+            showSection('home');
         }
 
         function updateAuthUI() {
@@ -832,85 +693,7 @@
             }
         }
 
-        function restoreLogin() {
-            if (sessionStorage.getItem('userAuth')) {
-                isLoggedIn = true;
-                updateAuthUI();
-            }
-        }
-
-        window.onclick = (event) => {
-            const modal = document.getElementById('loginModal');
-            if (event.target === modal) {
-                closeLoginModal();
-            }
-        };
-
-        // ==================== BLOG MANAGEMENT ====================
-        let blogs = [];
-
-        async function loadBlogs() {
-            try {
-                if (firebaseReady && db) {
-                    const snapshot = await db.ref('blogs').once('value');
-                    blogs = snapshot.val() ? Object.values(snapshot.val()) : getDefaultBlogs();
-                    console.log('✅ Loaded from Firebase');
-                } else {
-                    const stored = localStorage.getItem('blogs_data');
-                    blogs = stored ? JSON.parse(stored) : getDefaultBlogs();
-                    console.log('✅ Loaded from localStorage');
-                }
-            } catch (error) {
-                console.error('Load error:', error);
-                blogs = getDefaultBlogs();
-            }
-            updateBlogDisplay();
-        }
-
-        function getDefaultBlogs() {
-            return [
-                {
-                    id: 1,
-                    title: "Transnational Approaches to Writing Center Pedagogy",
-                    date: "2024-01-15",
-                    category: "Writing Pedagogy",
-                    excerpt: "Exploring how writing centers can serve international graduate students.",
-                    content: "Writing centers have traditionally focused on helping students conform to Standard English conventions. However, this approach often treats multilingual and international writers' language practices as deficits rather than assets.\n\nIn this article, we explore transnational approaches that recognize the value of diverse linguistic practices.",
-                    readTime: 8,
-                    views: 342,
-                    image: null
-                },
-                {
-                    id: 2,
-                    title: "Decolonizing Academic Writing",
-                    date: "2023-12-20",
-                    category: "Composition Studies",
-                    excerpt: "Strategies for making academic writing more inclusive.",
-                    content: "Academic writing has long been dominated by Western traditions. Decolonizing means examining these assumptions and creating space for diverse ways of knowing.",
-                    readTime: 10,
-                    views: 287,
-                    image: null
-                }
-            ];
-        }
-
-        async function saveBlogsToStorage() {
-            try {
-                if (firebaseReady && db) {
-                    const blogsObj = {};
-                    blogs.forEach(blog => blogsObj[blog.id] = blog);
-                    await db.ref('blogs').set(blogsObj);
-                    console.log('✅ Saved to Firebase');
-                } else {
-                    localStorage.setItem('blogs_data', JSON.stringify(blogs));
-                    console.log('✅ Saved to localStorage');
-                }
-            } catch (error) {
-                console.error('Save error:', error);
-            }
-        }
-
-        async function createPost(e) {
+        function createPost(e) {
             e.preventDefault();
             const imageInput = document.getElementById('postImage');
             let imageData = null;
@@ -926,7 +709,7 @@
                 savePost(null);
             }
 
-            async function savePost(image) {
+            function savePost(image) {
                 const newPost = {
                     id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
                     title: document.getElementById('postTitle').value,
@@ -940,12 +723,11 @@
                 };
 
                 blogs.unshift(newPost);
-                await saveBlogsToStorage();
+                saveBlogsToFirebase();
 
-                document.querySelector('#createTab form').reset();
+                document.querySelector('.tab-content form').reset();
                 document.getElementById('imagePreview').style.display = 'none';
-                showSuccess('✅ Post published!');
-                setTimeout(() => switchTab('manageTabs'), 1000);
+                updateManagePostsList();
             }
         }
 
@@ -964,7 +746,7 @@
         function updateBlogDisplay() {
             const blogList = document.getElementById('blogList');
             if (blogs.length === 0) {
-                blogList.innerHTML = '<li style="text-align: center; padding: 3rem; color: var(--text-light);"><p>📝 No posts yet</p></li>';
+                blogList.innerHTML = '<li style="text-align: center; padding: 3rem;">No posts</li>';
                 return;
             }
 
@@ -978,22 +760,21 @@
                         <span>👁 ${blog.views} views</span>
                     </div>
                     <p class="blog-excerpt">${blog.excerpt}</p>
-                    <span class="read-more">Read More →</span>
                 </li>
             `).join('');
         }
 
-        async function viewBlogPost(id) {
+        function viewBlogPost(id) {
             const blog = blogs.find(b => b.id === id);
             if (blog) {
                 blog.views += 1;
-                await saveBlogsToStorage();
+                saveBlogsToFirebase();
                 alert(`${blog.title}\n\n${blog.content}`);
                 updateBlogDisplay();
             }
         }
 
-        async function updateManagePostsList() {
+        function updateManagePostsList() {
             const postsList = document.getElementById('postsManageList');
             if (blogs.length === 0) {
                 postsList.innerHTML = '<li style="text-align: center; padding: 2rem;">No posts</li>';
@@ -1012,21 +793,26 @@
             `).join('');
         }
 
-        async function deletePost(id) {
+        function deletePost(id) {
             if (confirm('Delete this post?')) {
                 blogs = blogs.filter(b => b.id !== id);
-                await saveBlogsToStorage();
-                await updateManagePostsList();
-                showSuccess('✅ Post deleted');
+                saveBlogsToFirebase();
+                updateManagePostsList();
             }
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            if (tabName === 'manageTabs') updateManagePostsList();
+        function switchTab(tabIndex) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-btn');
+            
+            tabs.forEach((t, i) => {
+                t.classList.toggle('active', i === tabIndex);
+            });
+            btns.forEach((b, i) => {
+                b.classList.toggle('active', i === tabIndex);
+            });
+            
+            if (tabIndex === 1) updateManagePostsList();
         }
 
         function showSuccess(msg) {
@@ -1036,29 +822,27 @@
             setTimeout(() => alert.classList.remove('show'), 3000);
         }
 
-        function showSection(sectionId) {
-            if (sectionId === 'dashboard' && !isLoggedIn) {
+        function showSection(id) {
+            if (id === 'dashboard' && !isLoggedIn) {
                 openLoginModal();
                 return;
             }
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
         function goHome() {
             showSection('home');
         }
 
-        // ==================== INIT ====================
-        window.addEventListener('load', async () => {
-            console.log('Initializing app...');
-            initFirebase();
-            restoreLogin();
-            await new Promise(r => setTimeout(r, 200)); // Wait for Firebase
-            await loadBlogs();
-            updateAuthUI();
-            console.log('✅ App ready!');
+        window.addEventListener('load', () => {
+            loadBlogs();
         });
+
+        window.onclick = (e) => {
+            const modal = document.getElementById('loginModal');
+            if (e.target === modal) closeLoginModal();
+        };
     </script>
 </body>
 </html>
