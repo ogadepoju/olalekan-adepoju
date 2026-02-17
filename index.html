@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olalekan Adepoju - PhD Researcher & Writing Specialist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #dc2626;
+            --gold: #d4af37;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --text: #334155;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--light-bg);
+        }
+
+        /* ==================== HEADER & NAV ==================== */
+        header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 1.25rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--accent);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            flex: 1;
+        }
+
+        nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        nav a, nav button {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        .nav-btn-active {
+            color: var(--accent);
+        }
+
+        .nav-btn-active::after {
+            width: 100%;
+            background: var(--accent);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .login-btn {
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .logout-btn:hover {
+            background: var(--gold);
+            color: var(--primary);
+        }
+
+        /* MOBILE MENU */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-container {
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-wrapper {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--primary);
+                flex-direction: column;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                border-bottom: 4px solid var(--accent);
+                padding: 0;
+            }
+
+            .nav-wrapper.active {
+                max-height: 400px;
+                padding: 1.5rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+            }
+
+            nav a, nav button {
+                padding: 0.75rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                width: 100%;
+                text-align: left;
+            }
+
+            nav a:last-child,
+            nav button:last-child {
+                border-bottom: none;
+            }
+
+            nav a::after {
+                display: none;
+            }
+
+            .nav-btn-active {
+                color: var(--gold);
+            }
+
+            .auth-section {
+                position: absolute;
+                top: 70px;
+                right: 0;
+                background: var(--secondary);
+                padding: 1rem 1.5rem;
+                gap: 0.75rem;
+                flex-direction: column;
+                width: auto;
+                min-width: 150px;
+                border-bottom: 4px solid var(--accent);
+            }
+
+            .login-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .logout-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .user-info {
+                font-size: 0.85rem;
+                padding: 0 0.5rem;
+            }
+        }
+
+        /* ==================== LOGIN MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .demo-creds {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .demo-creds strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .demo-creds code {
+            background: var(--white);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            margin: 0 0.2rem;
+        }
+
+        /* ==================== MAIN CONTAINER ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            display: none;
+            padding: 4rem 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: -4rem 0 0 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-consultation {
+            background: var(--gold);
+            color: var(--primary);
+        }
+
+        .btn-consultation:hover {
+            background: #c9a940;
+            transform: translateY(-2px);
+        }
+
+        /* ==================== ABOUT INTRO ==================== */
+        .about-intro {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 3rem 0;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-intro-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .about-intro-text p {
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .about-intro-highlights {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .highlight-item {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .highlight-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .highlight-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .about-intro-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .intro-badge {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--gold);
+        }
+
+        .intro-badge h3 {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .intro-badge p {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* ==================== PORTFOLIO SECTION ==================== */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        .portfolio-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .portfolio-block {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--accent);
+        }
+
+        .portfolio-block h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .portfolio-block ul {
+            list-style: none;
+        }
+
+        .portfolio-block li {
+            padding: 0.75rem 0;
+            color: var(--text);
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .portfolio-block li:last-child {
+            border-bottom: none;
+        }
+
+        .portfolio-block li::before {
+            content: "▸";
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .portfolio-three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .portfolio-stat {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border-top: 4px solid var(--gold);
+        }
+
+        .portfolio-stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent);
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .portfolio-stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .portfolio-experience {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .experience-item {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .experience-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .experience-date {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            background: var(--light-bg);
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .experience-org {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .publications-list {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .publications-list h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .publication-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .publication-item:last-child {
+            border-bottom: none;
+        }
+
+        .publication-year {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .publication-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .publication-journal {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* ==================== FEATURED ARTICLES ==================== */
+        .featured-section {
+            margin: 4rem 0;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .article-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .article-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2.5rem;
+            overflow: hidden;
+        }
+
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+        }
+
+        .article-category {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            flex-wrap: wrap;
+        }
+
+        .article-excerpt {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .read-more-link {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .read-more-link:hover {
+            color: var(--primary);
+        }
+
+        /* ==================== BLOG SECTION ==================== */
+        .blog-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2.5rem;
+        }
+
+        .blog-list {
+            list-style: none;
+        }
+
+        .blog-post-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-post-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .blog-post-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .blog-post-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            flex-wrap: wrap;
+        }
+
+        .blog-category-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-excerpt {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .read-btn {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .read-btn:hover {
+            color: var(--primary);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar-box {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--accent);
+        }
+
+        .sidebar-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .top-posts-list {
+            list-style: none;
+        }
+
+        .top-post-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .top-post-item:last-child {
+            border-bottom: none;
+        }
+
+        .top-post-title {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .top-post-title:hover {
+            color: var(--accent);
+        }
+
+        .top-post-meta {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* ==================== BLOG DETAIL PAGE ==================== */
+        .blog-detail {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .blog-detail-header {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .blog-detail-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .blog-detail-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            flex-wrap: wrap;
+        }
+
+        .blog-detail-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-detail-body {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text);
+        }
+
+        .blog-detail-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-detail-body h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 2rem 0 1rem;
+        }
+
+        .blog-detail-body h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .blog-detail-body ul {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-detail-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-detail-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+            text-align: center;
+        }
+
+        .blog-detail-footer p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .back-to-blog {
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        /* ==================== DASHBOARD ==================== */
+        .dashboard {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .dashboard-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            max-width: 250px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-preview-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        .success-alert {
+            background: #dcfce7;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-alert.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: var(--light-bg);
+            color: var(--primary);
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+
+        .posts-list {
+            list-style: none;
+        }
+
+        .post-item {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .post-info h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .post-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: var(--gold);
+            color: var(--white);
+        }
+
+        .btn-edit:hover {
+            background: #c9a940;
+        }
+
+        .btn-delete {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ==================== ABOUT SECTION ==================== */
+        .about-content {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .about-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .about-box {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--accent);
+        }
+
+        .about-box h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .about-box ul {
+            list-style: none;
+        }
+
+        .about-box li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .about-box li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 2.5rem 2rem;
+            margin-top: 4rem;
+            border-top: 4px solid var(--accent);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            align-items: center;
+        }
+
+        .contact-links a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-note {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .portfolio-three-col {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-intro {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .portfolio-two-col {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero {
+                padding: 4rem 1.5rem;
+            }
+
+            .about-intro {
+                padding: 1.5rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .post-item {
+                flex-direction: column;
+            }
+
+            .post-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .cta-group .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .blog-detail {
+                padding: 1.5rem;
+            }
+
+            .blog-detail-title {
+                font-size: 1.8rem;
+            }
+
+            .dashboard {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .experience-header {
+                flex-direction: column;
+            }
+
+            .experience-date {
+                margin-top: 0.5rem;
+                display: inline-block;
+            }
+
+            .portfolio-three-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="goHome(); return false;">OA</a>
+            
+            <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="nav-wrapper" id="navWrapper">
+                <nav>
+                    <a href="#" onclick="goHome(); return false;" class="nav-link" id="navHome">Home</a>
+                    <a href="#" onclick="showSection('portfolio'); return false;" class="nav-link" id="navPortfolio">Portfolio</a>
+                    <a href="#" onclick="showSection('blog'); return false;" class="nav-link" id="navBlog">Blog</a>
+                    <a href="#" onclick="showSection('about'); return false;" class="nav-link" id="navAbout">About</a>
+                </nav>
+            </div>
+
+            <div class="auth-section">
+                <div id="authContainer">
+                    <button class="login-btn" onclick="openLoginModal()" id="loginBtnNav">Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLoginModal()">✕</button>
+            <div class="modal-header">
+                <h2>Admin Login</h2>
+                <p>Access blog management dashboard</p>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="error-message" id="errorMsg"></div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+            <div class="demo-creds">
+                <strong>Demo Credentials:</strong>
+                Username: <code>admin</code><br>
+                Password: <code>password123</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- HOME SECTION -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Olalekan Adepoju</h1>
+                    <p class="subtitle">PhD in Rhetoric & Composition</p>
+                    <p>
+                        Empowering writers through transnational pedagogy, decolonizing academic spaces, 
+                        and leveraging multilingual assets in writing instruction.
+                    </p>
+                    <div class="cta-group">
+                        <a href="#" onclick="showSection('blog'); return false;" class="btn btn-primary">Read Blog</a>
+                        <a href="#" onclick="showSection('portfolio'); return false;" class="btn btn-secondary">View Portfolio</a>
+                        <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABOUT INTRO -->
+            <div class="about-intro">
+                <div class="about-intro-text">
+                    <h2>About Olalekan Adepoju</h2>
+                    <p>
+                        I am an educator and researcher specializing in rhetoric, composition, and international writing pedagogy. 
+                        With a PhD from the University of Louisville, my work focuses on empowering multilingual writers and 
+                        decolonizing academic writing spaces through transnational approaches.
+                    </p>
+                    <p>
+                        Currently serving as an Instructor at the College of Staten Island, CUNY, I design and teach writing courses 
+                        that recognize linguistic diversity as an asset. My research explores how writing instruction can better serve 
+                        international and multilingual students by valuing their existing skills.
+                    </p>
+                    <div class="about-intro-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-number">10+</div>
+                            <div class="highlight-label">Publications</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-number">15+</div>
+                            <div class="highlight-label">Presentations</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-number">500+</div>
+                            <div class="highlight-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-intro-sidebar">
+                    <div class="intro-badge">
+                        <h3>Specialization</h3>
+                        <p>Writing Pedagogy & Composition</p>
+                    </div>
+                    <div class="intro-badge" style="border-left-color: var(--accent);">
+                        <h3>Focus</h3>
+                        <p>Transnational Writing</p>
+                    </div>
+                    <div class="intro-badge" style="border-left-color: var(--gold);">
+                        <h3>Location</h3>
+                        <p>New York, USA</p>
+                    </div>
+                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation" style="text-align: center; padding: 0.75rem 1.5rem;">📅 Book Consultation</a>
+                </div>
+            </div>
+
+            <!-- TOP 3 FEATURED ARTICLES -->
+            <div class="featured-section">
+                <h2 class="section-title">Featured Articles</h2>
+                <div class="articles-grid" id="topArticlesHome">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO SECTION -->
+        <section id="portfolio" class="section">
+            <h2 class="section-title">Professional Portfolio</h2>
+            <p class="section-subtitle">A comprehensive overview of my academic background, research focus, teaching experience, and scholarly contributions to the field of rhetoric and composition studies.</p>
+
+            <!-- EDUCATION & RESEARCH FOCUS -->
+            <div class="portfolio-two-col">
+                <div class="portfolio-block">
+                    <h3>🎓 Education</h3>
+                    <ul>
+                        <li><strong>PhD in Rhetoric & Composition</strong><br><small>University of Louisville, 2023</small></li>
+                        <li><strong>M.A. in English Language</strong><br><small>University of Ibadan, Nigeria, 2015</small></li>
+                        <li><strong>B.A. in English Language & Education</strong><br><small>University of Ilorin, Nigeria, 2012</small></li>
+                    </ul>
+                </div>
+
+                <div class="portfolio-block">
+                    <h3>🔬 Research Focus</h3>
+                    <ul>
+                        <li>Transnational Writing Pedagogy</li>
+                        <li>Multilingual Writing Practices</li>
+                        <li>Writing Center Administration</li>
+                        <li>Rhetorical Genre Analysis</li>
+                        <li>Decolonizing Academic Writing</li>
+                        <li>Discourse & Sociolinguistics</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CAREER HIGHLIGHTS -->
+            <div class="portfolio-three-col">
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-number">5+</div>
+                    <div class="portfolio-stat-label">Years in Higher Education</div>
+                </div>
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-number">10+</div>
+                    <div class="portfolio-stat-label">Peer-Reviewed Publications</div>
+                </div>
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-number">15+</div>
+                    <div class="portfolio-stat-label">Conferences & Presentations</div>
+                </div>
+            </div>
+
+            <!-- CURRENT POSITION -->
+            <div class="portfolio-experience">
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="experience-title">Instructor</div>
+                            <div class="experience-org">College of Staten Island, CUNY</div>
+                        </div>
+                        <div class="experience-date">Present</div>
+                    </div>
+                    <div class="experience-desc">
+                        Teaching college writing, business writing, and graduate-level writing across the curriculum courses. 
+                        Coordinate writing program administration and serve as WAC coordinator for curriculum development.
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="experience-title">Assistant Director, Writing Center</div>
+                            <div class="experience-org">University of Louisville</div>
+                        </div>
+                        <div class="experience-date">2020-2022</div>
+                    </div>
+                    <div class="experience-desc">
+                        Mentored writing center tutors, facilitated graduate and faculty writing groups, organized dissertation 
+                        writing retreats, and designed presentations on writing topics for diverse audiences.
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="experience-title">Writing Center Consultant</div>
+                            <div class="experience-org">University of Louisville Writing Center</div>
+                        </div>
+                        <div class="experience-date">2019-2022</div>
+                    </div>
+                    <div class="experience-desc">
+                        Conducted individual consultations with graduate and undergraduate students on writing of all types. 
+                        Worked collaboratively with 15+ consultants on 1200+ writing sessions annually.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEACHING & AWARDS -->
+            <div class="portfolio-two-col">
+                <div class="portfolio-block">
+                    <h3>📚 Courses Taught</h3>
+                    <ul>
+                        <li>Introduction to College Writing (Freshman)</li>
+                        <li>College Writing - ESL Section</li>
+                        <li>Business Writing</li>
+                        <li>Writing Across the Curriculum (Graduate)</li>
+                        <li>Research Methods & Academic Writing</li>
+                        <li>Writing in the Digital Age</li>
+                    </ul>
+                </div>
+
+                <div class="portfolio-block">
+                    <h3>🏆 Awards & Recognition</h3>
+                    <ul>
+                        <li>Bedford New Scholar, Macmillan Learning</li>
+                        <li>Graduate Students Dean Recognition</li>
+                        <li>Academic Merit Award, NCPTW</li>
+                        <li>Student Champion Award</li>
+                        <li>HASTAC Scholar</li>
+                        <li>Multiple Research Grants</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PUBLICATIONS -->
+            <div class="publications-list">
+                <h3>📖 Selected Publications</h3>
+                
+                <div class="publication-item">
+                    <div class="publication-year">2024</div>
+                    <div class="publication-title">Adepoju, O.T. & Sharp, J. "Understanding the ideological force of graduate application materials: A rhetorical genre study of personal statement prompts."</div>
+                    <div class="publication-journal">Rhetoric Review, 43(3), 201-216.</div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-year">2023</div>
+                    <div class="publication-title">Adepoju, O.T. "Spatial metaphors in introductory statements of humanities and STEM disciplines: A study of English and Mechanical Engineering departments."</div>
+                    <div class="publication-journal">International Journal of Multidisciplinary Perspectives in Higher Education, 122-149.</div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-year">2022</div>
+                    <div class="publication-title">Adepoju, O.T. Book Review: "Internationalizing the Writing Center: A Guide for Developing a Multilingual Writing Center" by Noreen Groover Lape.</div>
+                    <div class="publication-journal">Journal of Second Language Writing, 55, 100878.</div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-year">2019</div>
+                    <div class="publication-title">Adepoju, O.T. "Island Constraints" in Contemporary Issues in Language Studies.</div>
+                    <div class="publication-journal">Edited by A.B. Sunday & F.O. Egbokhare, Scholarship Publishers, pp. 175-185.</div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-year">2018</div>
+                    <div class="publication-title">Adepoju, O.T. "Handling Public Faces: A Discursive Analysis of Buhari's 2015 Presidential Media Chat in Nigeria."</div>
+                    <div class="publication-journal">Discourse-stylistics, Sociolinguistics and Society: A Festschrift for Ayo Ogunsiji, Stirling-Horden Publishers.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOG SECTION -->
+        <section id="blog" class="section">
+            <h2 class="section-title">Blog</h2>
+            <div class="blog-layout">
+                <div>
+                    <ul class="blog-list" id="blogList">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+                <div class="sidebar">
+                    <div class="sidebar-box">
+                        <h3>📌 About This Blog</h3>
+                        <p style="font-size: 0.95rem; color: var(--text-light); margin: 0;">
+                            Insights on writing pedagogy, composition studies, and international perspectives on academic writing.
+                        </p>
+                    </div>
+                    <div class="sidebar-box">
+                        <h3>🔥 Top 5 Posts</h3>
+                        <ul class="top-posts-list" id="topPostsSidebar">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOG DETAIL PAGE (Hidden by default) -->
+        <section id="blogDetail" class="section">
+            <div class="blog-detail">
+                <div class="blog-detail-header" id="blogDetailHeader">
+                    <!-- Populated dynamically -->
+                </div>
+                <img id="blogDetailImage" class="blog-detail-image" style="display: none;">
+                <div class="blog-detail-body" id="blogDetailBody">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="blog-detail-footer">
+                    <p>Want to discuss writing pedagogy or academic writing instruction?</p>
+                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Schedule Free Consultation</a>
+                    <button onclick="showSection('blog')" class="btn btn-secondary back-to-blog">← Back to Blog</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD SECTION (Protected) -->
+        <section id="dashboard" class="section">
+            <div class="dashboard">
+                <div class="dashboard-header">
+                    <h2>Blog Management Dashboard</h2>
+                    <p>Create, edit, and manage your blog posts</p>
+                </div>
+
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('createTab')">Create Post</button>
+                    <button class="tab-btn" onclick="switchTab('manageTabs')">Manage Posts</button>
+                </div>
+
+                <!-- CREATE POST TAB -->
+                <div id="createTab" class="tab-content active">
+                    <div class="success-alert" id="successAlert"></div>
+                    <form onsubmit="createPost(event)">
+                        <div class="form-grid full">
+                            <div class="form-group">
+                                <label for="postTitle">Post Title *</label>
+                                <input type="text" id="postTitle" placeholder="Enter blog post title" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="postDate">Publication Date *</label>
+                                <input type="date" id="postDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postCategory">Category *</label>
+                                <select id="postCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Writing Pedagogy">Writing Pedagogy</option>
+                                    <option value="Composition Studies">Composition Studies</option>
+                                    <option value="International Writing">International Writing</option>
+                                    <option value="Language & Discourse">Language & Discourse</option>
+                                    <option value="Research Insights">Research Insights</option>
+                                    <option value="Teaching Tips">Teaching Tips</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid full">
+                            <div class="form-group">
+                                <label for="postExcerpt">Excerpt *</label>
+                                <textarea id="postExcerpt" placeholder="Brief summary of your post" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-grid full">
+                            <div class="form-group">
+                                <label for="postImage">Featured Image (Optional)</label>
+                                <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
+                                <div class="image-preview" id="imagePreview" style="display: none;">
+                                    <img id="previewImg" src="" alt="Image Preview">
+                                    <div class="image-preview-text">✓ Image selected</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid full">
+                            <div class="form-group">
+                                <label for="postContent">Full Content *</label>
+                                <textarea id="postContent" placeholder="Write your full blog post content here..." required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="postReadTime">Read Time (minutes) *</label>
+                                <input type="number" id="postReadTime" min="1" value="5" required>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn-submit">Publish Post</button>
+                            <button type="reset" class="btn-reset">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- MANAGE POSTS TAB -->
+                <div id="manageTabs" class="tab-content">
+                    <ul class="posts-list" id="postsManageList">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="section">
+            <div class="about-content">
+                <h2>About Me</h2>
+                <p>
+                    I am a passionate educator and researcher dedicated to advancing writing pedagogy through transnational 
+                    and multilingual perspectives. My work focuses on recognizing and mobilizing the linguistic and cultural assets 
+                    of international writers, particularly in writing center contexts.
+                </p>
+
+                <p>
+                    With a PhD in Rhetoric and Composition from the University of Louisville and extensive experience teaching 
+                    across diverse student populations, I bring both theoretical knowledge and practical classroom expertise to my work. 
+                    My research examines how writing instruction can better serve international and multilingual students by valuing 
+                    their existing skills rather than focusing on perceived deficits.
+                </p>
+
+                <div class="about-grid">
+                    <div class="about-box">
+                        <h3>🎯 Teaching Philosophy</h3>
+                        <ul>
+                            <li>Student-centered approaches</li>
+                            <li>Inclusive classroom practices</li>
+                            <li>Linguistic diversity recognition</li>
+                            <li>Critical consciousness building</li>
+                            <li>Collaborative learning</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-box">
+                        <h3>🌍 Areas of Expertise</h3>
+                        <ul>
+                            <li>Rhetoric & Composition</li>
+                            <li>Writing Center Administration</li>
+                            <li>ESL Writing Instruction</li>
+                            <li>Academic Discourse Analysis</li>
+                            <li>Curriculum Development</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-box">
+                        <h3>📖 Scholarly Work</h3>
+                        <ul>
+                            <li>Peer-reviewed publications</li>
+                            <li>Book chapters & collections</li>
+                            <li>International presentations</li>
+                            <li>Online scholarship</li>
+                            <li>Professional workshops</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>Olalekan Tunde Adepoju, PhD</strong></p>
+        <p>Educator | Researcher | Writing Specialist</p>
+        <div class="contact-links">
+            <span>📧 <a href="mailto:olalekanadepoju18@gmail.com">olalekanadepoju18@gmail.com</a></span>
+            <span>📱 (502) 531-6870</span>
+            <span>📍 Yardley, PA | New York, NY</span>
+            <span><a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation" style="padding: 0.5rem 1rem; font-size: 0.85rem;">📅 Free Consultation</a></span>
+        </div>
+        <p class="footer-note">© 2024 Olalekan Adepoju. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // ==================== MOBILE MENU TOGGLE ====================
+        function toggleMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navWrapper = document.getElementById('navWrapper');
+            hamburger.classList.toggle('active');
+            navWrapper.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navWrapper = document.getElementById('navWrapper');
+            hamburger.classList.remove('active');
+            navWrapper.classList.remove('active');
+        }
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // ==================== AUTHENTICATION ====================
+        let isLoggedIn = false;
+        let currentUser = null;
+
+        const VALID_CREDENTIALS = {
+            username: 'admin',
+            password: 'password123'
+        };
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
+                isLoggedIn = true;
+                currentUser = username;
+                errorMsg.classList.remove('show');
+                closeLoginModal();
+                updateAuthUI();
+                showSection('dashboard');
+                showSuccess('✅ Successfully logged in! Welcome to the dashboard.');
+            } else {
+                errorMsg.textContent = '❌ Invalid credentials. Please try again.';
+                errorMsg.classList.add('show');
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            currentUser = null;
+            updateAuthUI();
+            goHome();
+            showSuccess('✅ Successfully logged out.');
+        }
+
+        function updateAuthUI() {
+            const authContainer = document.getElementById('authContainer');
+
+            if (isLoggedIn) {
+                authContainer.innerHTML = `
+                    <span class="user-info">👤 ${currentUser}</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                `;
+            } else {
+                authContainer.innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+            }
+        }
+
+        // Close modal on outside click
+        window.onclick = (event) => {
+            const modal = document.getElementById('loginModal');
+            if (event.target === modal) {
+                closeLoginModal();
+            }
+        };
+
+        // ==================== BLOG MANAGEMENT ====================
+        let blogs = JSON.parse(localStorage.getItem('blogs')) || [
+            {
+                id: 1,
+                title: "Transnational Approaches to Writing Center Pedagogy",
+                date: "2024-01-15",
+                category: "Writing Pedagogy",
+                excerpt: "Exploring how writing centers can serve international graduate students by recognizing their linguistic and cultural assets.",
+                content: "Writing centers have traditionally focused on helping students conform to Standard English conventions. However, this approach often treats multilingual and international writers' language practices as deficits rather than assets.\n\nIn this article, we explore transnational approaches that recognize the value of diverse linguistic practices. By shifting our perspective from deficit-based to asset-based thinking, we can create more inclusive and empowering writing center spaces.\n\nTransnational pedagogy acknowledges that writers bring multiple linguistic resources and cultural ways of knowing. Rather than erasing these differences, we can celebrate them as strengths that enrich academic discourse.",
+                readTime: 8,
+                views: 342,
+                image: null
+            },
+            {
+                id: 2,
+                title: "Decolonizing Academic Writing: A Practical Framework",
+                date: "2023-12-20",
+                category: "Composition Studies",
+                excerpt: "Strategies for decolonizing writing instruction and making academic writing more inclusive and culturally responsive.",
+                content: "Academic writing has long been dominated by Western traditions and conventions that privilege particular ways of organizing knowledge. Decolonizing academic writing means examining these assumptions and creating space for diverse epistemic traditions.\n\nWhat does decolonizing academic writing mean? It means recognizing that the conventions we teach as universal are actually culturally specific. It means questioning who gets to define 'good writing' and whose voices are centered in academic discourse.\n\nDecolonization is not about lowering standards but about expanding what we recognize as legitimate forms of academic expression.",
+                readTime: 10,
+                views: 287,
+                image: null
+            },
+            {
+                id: 3,
+                title: "The Power of Multilingual Writing Practices",
+                date: "2023-11-10",
+                category: "International Writing",
+                excerpt: "How multilingual writers can leverage their language repertoires as strengths rather than deficits.",
+                content: "Multilingual writers bring tremendous assets to academic writing. Yet, they are often positioned as lacking rather than as bringing unique resources. This article examines how we can reframe multilingualism as a strength.\n\nMultilingual writers possess what scholars call 'translanguaging' abilities - the capacity to move fluidly between languages and linguistic resources. This ability is not a limitation but a sophisticated cognitive skill.\n\nWhen multilingual writers draw on their full linguistic repertoires, they access richer vocabulary, more nuanced ways of expressing complex ideas, and multiple perspectives on how language works.",
+                readTime: 7,
+                views: 215,
+                image: null
+            },
+            {
+                id: 4,
+                title: "Writing Center Tutoring in Asynchronous Environments",
+                date: "2023-10-05",
+                category: "Writing Pedagogy",
+                excerpt: "Strategies for maintaining meaningful writing consultations in online and asynchronous formats.",
+                content: "The shift to online and asynchronous writing instruction has created new opportunities and challenges for writing center professionals. How can we maintain the interactive and dialogic nature of face-to-face consultations in digital environments?\n\nAsynchronous consultations have unique advantages. They allow writers time to reflect on feedback, reduce anxiety for some students, and create written records of feedback for future reference.",
+                readTime: 9,
+                views: 198,
+                image: null
+            },
+            {
+                id: 5,
+                title: "Genre Analysis and International Graduate Students",
+                date: "2023-09-12",
+                category: "Research Insights",
+                excerpt: "How understanding rhetorical genres can empower international writers to navigate academic discourse communities.",
+                content: "International graduate students often struggle not because they lack writing ability, but because they are unfamiliar with the specific genres and conventions of their discipline. Explicit genre instruction can transform their academic writing.",
+                readTime: 8,
+                views: 176,
+                image: null
+            },
+            {
+                id: 6,
+                title: "Teaching Academic Writing to Diverse Learners",
+                date: "2023-08-28",
+                category: "Teaching Tips",
+                excerpt: "Practical classroom strategies for supporting students from various linguistic and cultural backgrounds.",
+                content: "Teaching academic writing to diverse learners requires understanding that 'one size fits all' approaches don't work. Different students bring different strengths, experiences, and challenges. Effective teaching requires flexibility and responsiveness.",
+                readTime: 6,
+                views: 152,
+                image: null
+            }
+        ];
+
+        function saveBlogsToStorage() {
+            localStorage.setItem('blogs', JSON.stringify(blogs));
+            updateBlogDisplay();
+            updateTopPosts();
+        }
+
+        function createPost(e) {
+            e.preventDefault();
+
+            const imageInput = document.getElementById('postImage');
+            let imageData = null;
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    imageData = reader.result;
+                    saveNewPost(imageData);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveNewPost(null);
+            }
+
+            function saveNewPost(image) {
+                const newPost = {
+                    id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
+                    title: document.getElementById('postTitle').value,
+                    date: document.getElementById('postDate').value,
+                    category: document.getElementById('postCategory').value,
+                    excerpt: document.getElementById('postExcerpt').value,
+                    content: document.getElementById('postContent').value,
+                    readTime: parseInt(document.getElementById('postReadTime').value),
+                    views: 0,
+                    image: image
+                };
+
+                blogs.unshift(newPost);
+                saveBlogsToStorage();
+
+                document.querySelector('#createTab form').reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                showSuccess('✅ Blog post published successfully!');
+                setTimeout(() => switchTab('manageTabs'), 1000);
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('imagePreview');
+                    const previewImg = document.getElementById('previewImg');
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateBlogDisplay() {
+            const blogList = document.getElementById('blogList');
+
+            if (blogs.length === 0) {
+                blogList.innerHTML = `
+                    <li style="text-align: center; padding: 3rem; color: var(--text-light);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                        <p>No blog posts yet. Check back soon!</p>
+                    </li>
+                `;
+                return;
+            }
+
+            blogList.innerHTML = blogs.map(blog => `
+                <li class="blog-post-card" onclick="viewBlogPost(${blog.id})">
+                    <h3 class="blog-post-title">${blog.title}</h3>
+                    <span class="blog-category-tag">${blog.category}</span>
+                    <div class="blog-post-meta">
+                        <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
+                        <span>⏱ ${blog.readTime} min read</span>
+                        <span>👁 ${blog.views} views</span>
+                    </div>
+                    <p class="blog-excerpt">${blog.excerpt}</p>
+                    <a href="#" onclick="viewBlogPost(${blog.id}); return false;" class="read-btn">Read Full Article →</a>
+                </li>
+            `).join('');
+        }
+
+        function updateTopPosts() {
+            const topPostsSidebar = document.getElementById('topPostsSidebar');
+            const topArticlesHome = document.getElementById('topArticlesHome');
+
+            const top3 = [...blogs].sort((a, b) => b.views - a.views).slice(0, 3);
+
+            if (top3.length === 0) {
+                topPostsSidebar.innerHTML = '<li style="text-align: center; color: var(--text-light);">No posts yet</li>';
+                topArticlesHome.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No posts yet</div>';
+                return;
+            }
+
+            // Sidebar top posts
+            topPostsSidebar.innerHTML = top3.map(blog => `
+                <li class="top-post-item">
+                    <div class="top-post-title" onclick="viewBlogPost(${blog.id})">${blog.title}</div>
+                    <div class="top-post-meta">👁 ${blog.views} views</div>
+                </li>
+            `).join('');
+
+            // Homepage featured articles
+            topArticlesHome.innerHTML = top3.map((blog, index) => `
+                <div class="article-card" onclick="viewBlogPost(${blog.id})">
+                    <div class="article-image">
+                        ${blog.image ? `<img src="${blog.image}" alt="Featured image">` : '<span>#' + (index + 1) + '</span>'}
+                    </div>
+                    <div class="article-content">
+                        <span class="article-category">${blog.category}</span>
+                        <h3 class="article-title">${blog.title}</h3>
+                        <div class="article-meta">
+                            <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
+                            <span>⏱ ${blog.readTime} min</span>
+                        </div>
+                        <p class="article-excerpt">${blog.excerpt}</p>
+                        <a href="#" onclick="viewBlogPost(${blog.id}); return false;" class="read-more-link">Read More →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewBlogPost(id) {
+            const blog = blogs.find(b => b.id === id);
+            if (blog) {
+                // Increment views
+                blog.views += 1;
+                saveBlogsToStorage();
+
+                // Display blog detail
+                const header = document.getElementById('blogDetailHeader');
+                const image = document.getElementById('blogDetailImage');
+                const body = document.getElementById('blogDetailBody');
+
+                header.innerHTML = `
+                    <h1 class="blog-detail-title">${blog.title}</h1>
+                    <div class="blog-detail-meta">
+                        <span>${blog.category}</span>
+                        <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
+                        <span>⏱ ${blog.readTime} min read</span>
+                        <span>👁 ${blog.views} views</span>
+                    </div>
+                `;
+
+                if (blog.image) {
+                    image.src = blog.image;
+                    image.style.display = 'block';
+                } else {
+                    image.style.display = 'none';
+                }
+
+                body.textContent = blog.content;
+
+                showSection('blogDetail');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function updateManagePostsList() {
+            const postsList = document.getElementById('postsManageList');
+
+            if (blogs.length === 0) {
+                postsList.innerHTML = `
+                    <li style="text-align: center; padding: 3rem;">
+                        <div class="empty-icon">📝</div>
+                        <p style="color: var(--text-light);">No posts created yet.</p>
+                    </li>
+                `;
+                return;
+            }
+
+            const sortedBlogs = [...blogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            postsList.innerHTML = sortedBlogs.map(blog => `
+                <li class="post-item">
+                    <div class="post-info">
+                        <h4>${blog.title}</h4>
+                        <p><strong>Category:</strong> ${blog.category}</p>
+                        <p><strong>Published:</strong> ${new Date(blog.date).toLocaleDateString()} | <strong>Views:</strong> ${blog.views}</p>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-small btn-delete" onclick="deletePost(${blog.id})">Delete</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function deletePost(id) {
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                blogs = blogs.filter(b => b.id !== id);
+                saveBlogsToStorage();
+                updateManagePostsList();
+                showSuccess('✅ Post deleted successfully.');
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'manageTabs') {
+                updateManagePostsList();
+            }
+        }
+
+        function showSuccess(message) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.classList.add('show');
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 4000);
+        }
+
+        // ==================== NAVIGATION ====================
+        function showSection(sectionId) {
+            // Check if user is logged in when accessing dashboard
+            if (sectionId === 'dashboard' && !isLoggedIn) {
+                openLoginModal();
+                return;
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update nav highlighting
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('nav-btn-active');
+            });
+
+            // Map section IDs to nav links
+            const navMap = {
+                'home': 'navHome',
+                'portfolio': 'navPortfolio',
+                'blog': 'navBlog',
+                'about': 'navAbout'
+            };
+
+            if (navMap[sectionId]) {
+                document.getElementById(navMap[sectionId]).classList.add('nav-btn-active');
+            }
+
+            window.scrollTo(0, 0);
+        }
+
+        function goHome() {
+            showSection('home');
+        }
+
+        // ==================== INITIALIZE ====================
+        window.addEventListener('load', () => {
+            updateAuthUI();
+            updateBlogDisplay();
+            updateTopPosts();
+        });
+    </script>
+</body>
+</html>
