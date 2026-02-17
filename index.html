@@ -2097,7 +2097,7 @@
         <p><strong>Olalekan Tunde Adepoju, PhD</strong></p>
         <p>Educator | Researcher | Writing Specialist</p>
         <div class="contact-links">
-            <span>📧 <a href="mailto:olalekanadepoju18@gmail.com">olalekanadepoju18@gmail.com</a></span>
+            <span>📧 <a href="/cdn-cgi/l/email-protection#335c5f525f5658525d525756435c5946020b73545e525a5f1d505c5e"><span class="__cf_email__" data-cfemail="d0bfbcb1bcb5bbb1beb1b4b5a0bfbaa5e1e890b7bdb1b9bcfeb3bfbd">[email&#160;protected]</span></a></span>
             <span>📱 (502) 531-6870</span>
             <span>📍 Yardley, PA | New York, NY</span>
             <span><a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation" style="padding: 0.5rem 1rem; font-size: 0.85rem;">📅 Free Consultation</a></span>
@@ -2105,7 +2105,7 @@
         <p class="footer-note">© 2024 Olalekan Adepoju. All rights reserved.</p>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ==================== MOBILE MENU TOGGLE ====================
         function toggleMobileMenu() {
             const hamburger = document.getElementById('hamburger');
@@ -2135,6 +2135,23 @@
             password: 'password123'
         };
 
+        // Check if user was logged in before page refresh
+        function restoreLoginSession() {
+            const savedAuth = sessionStorage.getItem('userAuth');
+            if (savedAuth) {
+                try {
+                    const authData = JSON.parse(savedAuth);
+                    if (authData.isLoggedIn && authData.currentUser) {
+                        isLoggedIn = true;
+                        currentUser = authData.currentUser;
+                        updateAuthUI();
+                    }
+                } catch (e) {
+                    console.log('Could not restore auth session');
+                }
+            }
+        }
+
         function openLoginModal() {
             document.getElementById('loginModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -2157,6 +2174,14 @@
             if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
                 isLoggedIn = true;
                 currentUser = username;
+                
+                // Save auth to sessionStorage so it persists on refresh
+                sessionStorage.setItem('userAuth', JSON.stringify({
+                    isLoggedIn: true,
+                    currentUser: username,
+                    timestamp: Date.now()
+                }));
+                
                 errorMsg.classList.remove('show');
                 closeLoginModal();
                 updateAuthUI();
@@ -2171,6 +2196,7 @@
         function logout() {
             isLoggedIn = false;
             currentUser = null;
+            sessionStorage.removeItem('userAuth');
             updateAuthUI();
             goHome();
             showSuccess('✅ Successfully logged out.');
@@ -2198,74 +2224,143 @@
         };
 
         // ==================== BLOG MANAGEMENT ====================
-        let blogs = JSON.parse(localStorage.getItem('blogs')) || [
-            {
-                id: 1,
-                title: "Transnational Approaches to Writing Center Pedagogy",
-                date: "2024-01-15",
-                category: "Writing Pedagogy",
-                excerpt: "Exploring how writing centers can serve international graduate students by recognizing their linguistic and cultural assets.",
-                content: "Writing centers have traditionally focused on helping students conform to Standard English conventions. However, this approach often treats multilingual and international writers' language practices as deficits rather than assets.\n\nIn this article, we explore transnational approaches that recognize the value of diverse linguistic practices. By shifting our perspective from deficit-based to asset-based thinking, we can create more inclusive and empowering writing center spaces.\n\nTransnational pedagogy acknowledges that writers bring multiple linguistic resources and cultural ways of knowing. Rather than erasing these differences, we can celebrate them as strengths that enrich academic discourse.",
-                readTime: 8,
-                views: 342,
-                image: null
-            },
-            {
-                id: 2,
-                title: "Decolonizing Academic Writing: A Practical Framework",
-                date: "2023-12-20",
-                category: "Composition Studies",
-                excerpt: "Strategies for decolonizing writing instruction and making academic writing more inclusive and culturally responsive.",
-                content: "Academic writing has long been dominated by Western traditions and conventions that privilege particular ways of organizing knowledge. Decolonizing academic writing means examining these assumptions and creating space for diverse epistemic traditions.\n\nWhat does decolonizing academic writing mean? It means recognizing that the conventions we teach as universal are actually culturally specific. It means questioning who gets to define 'good writing' and whose voices are centered in academic discourse.\n\nDecolonization is not about lowering standards but about expanding what we recognize as legitimate forms of academic expression.",
-                readTime: 10,
-                views: 287,
-                image: null
-            },
-            {
-                id: 3,
-                title: "The Power of Multilingual Writing Practices",
-                date: "2023-11-10",
-                category: "International Writing",
-                excerpt: "How multilingual writers can leverage their language repertoires as strengths rather than deficits.",
-                content: "Multilingual writers bring tremendous assets to academic writing. Yet, they are often positioned as lacking rather than as bringing unique resources. This article examines how we can reframe multilingualism as a strength.\n\nMultilingual writers possess what scholars call 'translanguaging' abilities - the capacity to move fluidly between languages and linguistic resources. This ability is not a limitation but a sophisticated cognitive skill.\n\nWhen multilingual writers draw on their full linguistic repertoires, they access richer vocabulary, more nuanced ways of expressing complex ideas, and multiple perspectives on how language works.",
-                readTime: 7,
-                views: 215,
-                image: null
-            },
-            {
-                id: 4,
-                title: "Writing Center Tutoring in Asynchronous Environments",
-                date: "2023-10-05",
-                category: "Writing Pedagogy",
-                excerpt: "Strategies for maintaining meaningful writing consultations in online and asynchronous formats.",
-                content: "The shift to online and asynchronous writing instruction has created new opportunities and challenges for writing center professionals. How can we maintain the interactive and dialogic nature of face-to-face consultations in digital environments?\n\nAsynchronous consultations have unique advantages. They allow writers time to reflect on feedback, reduce anxiety for some students, and create written records of feedback for future reference.",
-                readTime: 9,
-                views: 198,
-                image: null
-            },
-            {
-                id: 5,
-                title: "Genre Analysis and International Graduate Students",
-                date: "2023-09-12",
-                category: "Research Insights",
-                excerpt: "How understanding rhetorical genres can empower international writers to navigate academic discourse communities.",
-                content: "International graduate students often struggle not because they lack writing ability, but because they are unfamiliar with the specific genres and conventions of their discipline. Explicit genre instruction can transform their academic writing.",
-                readTime: 8,
-                views: 176,
-                image: null
-            },
-            {
-                id: 6,
-                title: "Teaching Academic Writing to Diverse Learners",
-                date: "2023-08-28",
-                category: "Teaching Tips",
-                excerpt: "Practical classroom strategies for supporting students from various linguistic and cultural backgrounds.",
-                content: "Teaching academic writing to diverse learners requires understanding that 'one size fits all' approaches don't work. Different students bring different strengths, experiences, and challenges. Effective teaching requires flexibility and responsiveness.",
-                readTime: 6,
-                views: 152,
-                image: null
+        let blogs = [];
+
+        // Initialize blogs from localStorage with fallback to sample data
+        function initializeBlogs() {
+            try {
+                const storedBlogs = localStorage.getItem('olalekan_blogs');
+                if (storedBlogs && storedBlogs !== 'undefined' && storedBlogs !== 'null') {
+                    blogs = JSON.parse(storedBlogs);
+                    if (!Array.isArray(blogs)) {
+                        blogs = getDefaultBlogs();
+                    }
+                } else {
+                    blogs = getDefaultBlogs();
+                    saveBlogsToStorage();
+                }
+            } catch (e) {
+                console.error('Error loading blogs:', e);
+                blogs = getDefaultBlogs();
+                saveBlogsToStorage();
             }
-        ];
+        }
+
+        function getDefaultBlogs() {
+            return [
+                {
+                    id: 1,
+                    title: "Transnational Approaches to Writing Center Pedagogy",
+                    date: "2024-01-15",
+                    category: "Writing Pedagogy",
+                    excerpt: "Exploring how writing centers can serve international graduate students by recognizing their linguistic and cultural assets.",
+                    content: "Writing centers have traditionally focused on helping students conform to Standard English conventions. However, this approach often treats multilingual and international writers' language practices as deficits rather than assets.\n\nIn this article, we explore transnational approaches that recognize the value of diverse linguistic practices. By shifting our perspective from deficit-based to asset-based thinking, we can create more inclusive and empowering writing center spaces.\n\nTransnational pedagogy acknowledges that writers bring multiple linguistic resources and cultural ways of knowing. Rather than erasing these differences, we can celebrate them as strengths that enrich academic discourse.",
+                    readTime: 8,
+                    views: 342,
+                    image: null
+                },
+                {
+                    id: 2,
+                    title: "Decolonizing Academic Writing: A Practical Framework",
+                    date: "2023-12-20",
+                    category: "Composition Studies",
+                    excerpt: "Strategies for decolonizing writing instruction and making academic writing more inclusive and culturally responsive.",
+                    content: "Academic writing has long been dominated by Western traditions and conventions that privilege particular ways of organizing knowledge. Decolonizing academic writing means examining these assumptions and creating space for diverse epistemic traditions.\n\nWhat does decolonizing academic writing mean? It means recognizing that the conventions we teach as universal are actually culturally specific. It means questioning who gets to define 'good writing' and whose voices are centered in academic discourse.\n\nDecolonization is not about lowering standards but about expanding what we recognize as legitimate forms of academic expression.",
+                    readTime: 10,
+                    views: 287,
+                    image: null
+                },
+                {
+                    id: 3,
+                    title: "The Power of Multilingual Writing Practices",
+                    date: "2023-11-10",
+                    category: "International Writing",
+                    excerpt: "How multilingual writers can leverage their language repertoires as strengths rather than deficits.",
+                    content: "Multilingual writers bring tremendous assets to academic writing. Yet, they are often positioned as lacking rather than as bringing unique resources. This article examines how we can reframe multilingualism as a strength.\n\nMultilingual writers possess what scholars call 'translanguaging' abilities - the capacity to move fluidly between languages and linguistic resources. This ability is not a limitation but a sophisticated cognitive skill.\n\nWhen multilingual writers draw on their full linguistic repertoires, they access richer vocabulary, more nuanced ways of expressing complex ideas, and multiple perspectives on how language works.",
+                    readTime: 7,
+                    views: 215,
+                    image: null
+                },
+                {
+                    id: 4,
+                    title: "Writing Center Tutoring in Asynchronous Environments",
+                    date: "2023-10-05",
+                    category: "Writing Pedagogy",
+                    excerpt: "Strategies for maintaining meaningful writing consultations in online and asynchronous formats.",
+                    content: "The shift to online and asynchronous writing instruction has created new opportunities and challenges for writing center professionals. How can we maintain the interactive and dialogic nature of face-to-face consultations in digital environments?\n\nAsynchronous consultations have unique advantages. They allow writers time to reflect on feedback, reduce anxiety for some students, and create written records of feedback for future reference.",
+                    readTime: 9,
+                    views: 198,
+                    image: null
+                },
+                {
+                    id: 5,
+                    title: "Genre Analysis and International Graduate Students",
+                    date: "2023-09-12",
+                    category: "Research Insights",
+                    excerpt: "How understanding rhetorical genres can empower international writers to navigate academic discourse communities.",
+                    content: "International graduate students often struggle not because they lack writing ability, but because they are unfamiliar with the specific genres and conventions of their discipline. Explicit genre instruction can transform their academic writing.",
+                    readTime: 8,
+                    views: 176,
+                    image: null
+                },
+                {
+                    id: 6,
+                    title: "Teaching Academic Writing to Diverse Learners",
+                    date: "2023-08-28",
+                    category: "Teaching Tips",
+                    excerpt: "Practical classroom strategies for supporting students from various linguistic and cultural backgrounds.",
+                    content: "Teaching academic writing to diverse learners requires understanding that 'one size fits all' approaches don't work. Different students bring different strengths, experiences, and challenges. Effective teaching requires flexibility and responsiveness.",
+                    readTime: 6,
+                    views: 152,
+                    image: null
+                }
+            ];
+        }
+
+        function saveBlogsToStorage() {
+            try {
+                // Compress images if they're too large (localStorage limit is ~5-10MB)
+                const blogsToSave = blogs.map(blog => {
+                    if (blog.image && blog.image.length > 500000) {
+                        // Image is larger than 500KB, remove it to save space
+                        console.warn('Image too large for blog:', blog.title);
+                        return { ...blog, image: null };
+                    }
+                    return blog;
+                });
+                
+                const jsonString = JSON.stringify(blogsToSave);
+                if (jsonString.length > 10000000) {
+                    // If data is too large, keep only recent blogs with images
+                    const recentBlogs = blogsToSave
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .slice(0, 20)
+                        .map(blog => ({ ...blog, image: null }));
+                    localStorage.setItem('olalekan_blogs', JSON.stringify(recentBlogs));
+                } else {
+                    localStorage.setItem('olalekan_blogs', jsonString);
+                }
+                updateBlogDisplay();
+                updateTopPosts();
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    console.error('LocalStorage quota exceeded. Removing images from older posts.');
+                    // Remove images from all blogs and save again
+                    const blogsWithoutImages = blogs.map(blog => ({ ...blog, image: null }));
+                    try {
+                        localStorage.setItem('olalekan_blogs', JSON.stringify(blogsWithoutImages));
+                        showSuccess('⚠️ Storage limit reached. Images removed from older posts.');
+                        updateBlogDisplay();
+                        updateTopPosts();
+                    } catch (e2) {
+                        console.error('Still cannot save:', e2);
+                        showSuccess('⚠️ Storage full. Try deleting old posts.');
+                    }
+                } else {
+                    console.error('Error saving blogs:', e);
+                }
+            }
+        }
 
         function saveBlogsToStorage() {
             localStorage.setItem('blogs', JSON.stringify(blogs));
@@ -2532,6 +2627,13 @@
 
         // ==================== INITIALIZE ====================
         window.addEventListener('load', () => {
+            // Restore login session if user was previously logged in
+            restoreLoginSession();
+            
+            // Initialize blogs from localStorage or defaults
+            initializeBlogs();
+            
+            // Update UI
             updateAuthUI();
             updateBlogDisplay();
             updateTopPosts();
