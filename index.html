@@ -7,22 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script>
-        // Mobile menu functions - Load early
-        function toggleMobileMenu() {
-            const hamburger = document.getElementById('hamburger');
-            const mobileMenu = document.getElementById('mobileMenu');
-            hamburger.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-        }
-
-        function closeMobileMenu() {
-            const hamburger = document.getElementById('hamburger');
-            const mobileMenu = document.getElementById('mobileMenu');
-            hamburger.classList.remove('active');
-            mobileMenu.classList.remove('active');
-        }
-    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -39,15 +23,20 @@
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.6; background: var(--light-bg); }
 
-        /* ==================== HEADER ==================== */
+        @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+
         header {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: var(--white);
             padding: 1.25rem 2rem;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: slideInDown 0.5s ease;
         }
 
         .nav-container {
@@ -64,7 +53,11 @@
             font-weight: 700;
             color: var(--gold);
             text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
+
+        .logo:hover { transform: scale(1.05); }
 
         .hamburger {
             display: none;
@@ -84,41 +77,21 @@
             transition: all 0.3s ease;
         }
 
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(10px, 10px);
-        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(10px, 10px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
 
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        nav {
-            display: flex;
-            gap: 2.5rem;
-            flex: 1;
-            margin-left: 3rem;
-        }
-
-        nav a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
+        nav { display: flex; gap: 2.5rem; flex: 1; margin-left: 3rem; }
+        nav a { color: var(--white); text-decoration: none; font-weight: 500; cursor: pointer; transition: color 0.3s ease; }
         nav a:hover { color: var(--gold); }
 
-        .auth-section {
-            display: flex;
-            gap: 1rem;
-        }
+        .auth-section { display: flex; gap: 1rem; }
+        .login-btn { padding: 0.6rem 1.2rem; border: none; background: var(--accent); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3); }
+        .logout-btn { padding: 0.6rem 1.2rem; border: 1px solid var(--gold); background: transparent; color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .logout-btn:hover { background: var(--gold); color: var(--primary); }
+        .user-info { color: var(--gold); font-weight: 600; }
 
-        /* Mobile Menu */
         .mobile-menu {
             display: none;
             position: fixed;
@@ -129,174 +102,90 @@
             flex-direction: column;
             padding: 1.5rem;
             z-index: 99;
-            max-height: calc(100vh - 70px);
-            overflow-y: auto;
             border-bottom: 4px solid var(--accent);
         }
 
-        .mobile-menu.active {
-            display: flex;
-        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a { color: var(--white); text-decoration: none; padding: 1rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; font-weight: 500; }
+        .mobile-auth { padding: 1rem 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 1rem; }
+        .mobile-auth button { width: 100%; padding: 0.75rem; }
 
-        .mobile-menu a {
-            color: var(--white);
-            text-decoration: none;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .mobile-menu a:hover {
-            color: var(--gold);
-        }
-
-        .mobile-menu a:last-of-type {
-            border-bottom: none;
-        }
-
-        .mobile-auth {
-            padding: 1rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 1rem;
-        }
-
-        .mobile-auth .login-btn {
-            width: 100%;
-            padding: 0.75rem;
-            font-size: 0.9rem;
-        }
-
-        .mobile-auth .logout-btn {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
-        }
-
-        .mobile-auth .user-info {
-            display: block;
-            padding: 1rem 0;
-            text-align: left;
-            font-size: 0.9rem;
-        }
-
-        .login-btn, .logout-btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn { background: var(--accent); color: var(--white); }
-        .login-btn:hover { background: #b91c1c; transform: translateY(-2px); }
-        .logout-btn { background: transparent; color: var(--white); border: 1px solid var(--gold); }
-        .logout-btn:hover { background: var(--gold); color: var(--primary); }
-        .user-info { color: var(--gold); font-weight: 600; }
-
-        /* ==================== MODAL ==================== */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active { display: flex !important; }
-
-        .modal-content {
-            background: var(--white);
-            padding: 2.5rem;
-            border-radius: 12px;
-            max-width: 450px;
-            width: 90%;
-            position: relative;
-        }
-
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--white); padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; position: relative; animation: slideInUp 0.3s ease; }
         .modal-close { position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.5rem; cursor: pointer; background: none; border: none; }
         .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem; }
 
         .form-group { margin-bottom: 1.25rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-        }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
 
         .error-message { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
         .error-message.show { display: block; }
 
-        .btn-submit {
-            width: 100%;
-            background: var(--accent);
-            color: var(--white);
-            padding: 0.8rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .btn-submit { width: 100%; background: var(--accent); color: var(--white); padding: 0.8rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-submit:hover { background: #b91c1c; transform: translateY(-2px); }
 
-        .btn-submit:hover { background: #b91c1c; }
-
-        .demo-creds {
-            background: var(--light-bg);
-            padding: 1rem;
-            border-radius: 6px;
-            margin-top: 1.25rem;
-            font-size: 0.85rem;
-        }
-
-        /* ==================== CONTAINER & SECTIONS ==================== */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
         .section { display: none; padding: 4rem 0; }
         .section.active { display: block; }
 
-        /* ==================== HERO ==================== */
         .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #dc2626 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             color: var(--white);
-            padding: 6rem 2rem;
+            padding: 8rem 2rem;
             text-align: center;
-            margin: -4rem 0 3rem 0;
+            margin: -4rem 0 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
+            opacity: 0.5;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: slideInUp 0.8s ease 0.3s backwards;
         }
 
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin-bottom: 0.5rem;
             line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .hero .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             color: var(--gold);
             margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .hero p {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.8;
-            color: #e2e8f0;
+            color: #f1f5f9;
             margin-bottom: 2rem;
             max-width: 800px;
             margin-left: auto;
@@ -311,430 +200,246 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 2rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1rem;
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary { background: var(--accent); color: var(--white); }
-        .btn-primary:hover { background: #b91c1c; transform: translateY(-2px); }
-        .btn-consultation { background: var(--gold); color: var(--primary); }
-        .btn-consultation:hover { background: #c9a940; }
-
-        /* ==================== ABOUT INTRO ==================== */
-        .about-intro {
-            background: var(--white);
-            padding: 3rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 3rem;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 3rem;
-            align-items: start;
-        }
-
-        .about-intro-text h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .about-intro-text p {
-            color: var(--text-light);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .about-intro-highlights {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .highlight-item {
-            text-align: center;
-        }
-
-        .highlight-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .highlight-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 0.5rem;
-            font-weight: 500;
-        }
-
-        .about-intro-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .intro-badge {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        .btn-primary {
+            background: var(--accent);
             color: var(--white);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            border-left: 4px solid var(--gold);
         }
 
-        .intro-badge h3 {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
         }
 
-        .intro-badge p {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin: 0;
+        .btn-consultation {
+            background: var(--gold);
+            color: var(--primary);
         }
 
-        /* ==================== FEATURED POSTS ==================== */
-        .featured-section {
-            margin: 4rem 0;
+        .btn-consultation:hover {
+            background: #c9a940;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: var(--primary);
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-light);
             margin-bottom: 2rem;
-            font-size: 0.95rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
         }
 
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
         }
 
-        .featured-card {
+        .about-section {
             background: var(--white);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .featured-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .featured-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-size: 2.5rem;
-            overflow: hidden;
-        }
-
-        .featured-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .featured-content {
-            padding: 1.5rem;
-        }
-
-        .featured-category {
-            display: inline-block;
-            background: var(--accent);
-            color: var(--white);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-
-        .featured-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
-            line-height: 1.3;
-        }
-
-        .featured-meta {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .featured-excerpt {
-            color: var(--text-light);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .read-more {
-            color: var(--accent);
-            font-weight: 600;
-            margin-top: 1rem;
-            display: inline-block;
-        }
-
-        /* ==================== PORTFOLIO SECTION ==================== */
-        .portfolio-section {
-            margin: 4rem 0;
-        }
-
-        .portfolio-grid {
+            padding: 4rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 4rem;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 3rem;
-            margin-bottom: 3rem;
+            align-items: center;
+            border-left: 6px solid var(--accent);
+            animation: slideInUp 0.8s ease;
         }
 
-        .portfolio-block {
-            background: var(--white);
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border-top: 4px solid var(--accent);
-        }
-
-        .portfolio-block h3 {
+        .about-text h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 2.2rem;
             color: var(--primary);
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
         }
 
-        .portfolio-block ul {
-            list-style: none;
-        }
-
-        .portfolio-block li {
-            padding: 0.75rem 0;
-            color: var(--text);
-            font-size: 0.95rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .portfolio-block li:last-child { border-bottom: none; }
-
-        .portfolio-block li::before {
-            content: "▸";
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+        .about-text p {
+            color: var(--text-light);
+            margin-bottom: 1.25rem;
+            line-height: 1.9;
+            font-size: 1.05rem;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .stat-card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            padding: 2.5rem;
+            border-radius: 12px;
             text-align: center;
+            color: var(--white);
             border-top: 4px solid var(--gold);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.8s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
         }
 
         .stat-number {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--accent);
+            font-size: 3.5rem;
             font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
-            margin-top: 0.5rem;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
         }
 
-        .experience-timeline {
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .featured-card {
             background: var(--white);
+            border-radius: 12px;
             padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            border-left: 5px solid var(--accent);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.8s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .experience-timeline h3 {
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+        }
+
+        .featured-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .featured-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--primary);
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
+            margin-bottom: 1rem;
+            line-height: 1.3;
         }
 
-        .timeline-item {
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
+        .featured-category {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), #b91c1c);
+            color: var(--white);
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
         }
 
-        .timeline-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-        .timeline-header {
+        .featured-meta {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .timeline-date {
+            gap: 1.5rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
             color: var(--text-light);
-            font-size: 0.85rem;
-            background: var(--light-bg);
-            padding: 0.3rem 0.75rem;
-            border-radius: 20px;
         }
 
-        .timeline-org {
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-desc {
+        .featured-excerpt {
             color: var(--text-light);
             font-size: 0.95rem;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        .publications-block {
-            background: var(--white);
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .publications-block h3 {
-            font-family: 'Playfair Display', serif;
+        .featured-card::after {
+            content: '→';
+            position: absolute;
+            right: 2.5rem;
+            bottom: 2.5rem;
             font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .publication-item {
-            padding: 1.5rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .publication-item:last-child { border-bottom: none; }
-
-        .pub-year {
             color: var(--accent);
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
         }
 
-        .pub-title {
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .pub-journal {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-
-        /* ==================== BLOG PAGE ==================== */
-        .blog-layout {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 2.5rem;
+        .featured-card:hover::after {
+            opacity: 1;
+            transform: translateX(5px);
         }
 
         .blog-list { list-style: none; }
 
         .blog-card {
             background: var(--white);
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-left: 5px solid var(--accent);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .blog-card:hover {
-            transform: translateX(8px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateX(12px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
         .blog-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             color: var(--primary);
             margin-bottom: 0.75rem;
-            line-height: 1.3;
         }
 
         .blog-category {
             display: inline-block;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), #b91c1c);
             color: var(--white);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -744,7 +449,7 @@
         .blog-meta {
             display: flex;
             gap: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             font-size: 0.9rem;
             color: var(--text-light);
         }
@@ -754,146 +459,23 @@
             line-height: 1.7;
         }
 
-        .read-btn {
-            color: var(--accent);
-            font-weight: 600;
-            margin-top: 1rem;
-            display: inline-block;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .sidebar-box {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border-top: 4px solid var(--accent);
-        }
-
-        .sidebar-box h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .top-posts-list { list-style: none; }
-
-        .top-post-item {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .top-post-item:last-child { border-bottom: none; }
-
-        .top-post-title {
-            color: var(--primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            margin-bottom: 0.25rem;
-        }
-
-        .top-post-title:hover { color: var(--accent); }
-
-        .top-post-meta {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        /* ==================== BLOG DETAIL ==================== */
-        .blog-detail {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 3rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .blog-detail-header {
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .blog-detail-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .blog-detail-meta {
-            display: flex;
-            gap: 2rem;
-            font-size: 0.95rem;
-            color: var(--text-light);
-            flex-wrap: wrap;
-        }
-
-        .blog-detail-image {
-            width: 100%;
-            max-height: 450px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin: 2rem 0;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .blog-detail-body {
-            font-size: 1.05rem;
-            line-height: 1.9;
-            color: var(--text);
-        }
-
-        .blog-detail-body p { margin-bottom: 1.5rem; }
-        .blog-detail-body h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin: 2rem 0 1rem;
-        }
-
-        .blog-detail-footer {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid var(--border);
-            text-align: center;
-        }
-
-        .blog-detail-footer p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-
-        /* ==================== DASHBOARD ==================== */
         .dashboard {
             background: var(--white);
-            border-radius: 10px;
-            padding: 2.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid var(--accent);
         }
 
         .dashboard-header {
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
             border-bottom: 2px solid var(--border);
         }
 
         .dashboard-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--primary);
         }
 
@@ -907,15 +489,19 @@
         .tab-btn {
             background: none;
             border: none;
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 2rem;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--text-light);
             font-weight: 600;
             position: relative;
+            transition: color 0.3s ease;
         }
 
-        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
         .tab-btn.active::after {
             content: '';
             position: absolute;
@@ -923,7 +509,8 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--accent);
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            border-radius: 2px;
         }
 
         .tab-content { display: none; }
@@ -937,22 +524,19 @@
         }
 
         .form-grid.full { grid-template-columns: 1fr; }
-
         .form-group textarea { resize: vertical; min-height: 120px; }
 
-        .image-preview { margin-top: 1rem; max-width: 250px; }
-        .image-preview img { width: 100%; border-radius: 8px; }
-
         .success-alert {
-            background: #dcfce7;
+            background: linear-gradient(135deg, #dcfce7, #d1fae5);
             color: #166534;
-            padding: 1rem;
-            border-radius: 6px;
+            padding: 1.25rem;
+            border-radius: 8px;
             margin-bottom: 1.5rem;
             display: none;
+            border-left: 4px solid #10b981;
         }
 
-        .success-alert.show { display: block; }
+        .success-alert.show { display: block; animation: slideInDown 0.3s ease; }
 
         .btn-group {
             display: flex;
@@ -961,217 +545,155 @@
         }
 
         .btn-submit-form {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), #b91c1c);
             color: var(--white);
-            padding: 0.75rem 2rem;
+            padding: 0.9rem 2.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .btn-submit-form:hover { background: #b91c1c; }
+        .btn-submit-form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+        }
 
         .btn-reset {
             background: var(--light-bg);
             color: var(--primary);
-            padding: 0.75rem 2rem;
-            border: none;
-            border-radius: 6px;
+            padding: 0.9rem 2.5rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: var(--border);
+            border-color: var(--primary);
         }
 
         .posts-list { list-style: none; }
 
         .post-item {
-            background: var(--light-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--light-bg), var(--white));
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
             border-left: 4px solid var(--accent);
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
 
-        .post-info h4 { color: var(--primary); margin-bottom: 0.5rem; }
-        .post-info p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .post-item:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .post-info h4 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1.1rem; }
+        .post-info p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 0.5rem; }
 
         .btn-delete {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), #b91c1c);
             color: var(--white);
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.25rem;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .btn-delete:hover { background: #b91c1c; }
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
+        }
 
         footer {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             text-align: center;
-            padding: 2.5rem 2rem;
+            padding: 3rem 2rem;
             margin-top: 4rem;
-            border-top: 4px solid var(--accent);
+            border-top: 6px solid var(--accent);
         }
 
-        footer a { color: var(--gold); text-decoration: none; }
+        footer a { color: var(--gold); text-decoration: none; transition: color 0.3s ease; }
+        footer a:hover { color: var(--white); }
 
         .status {
             position: fixed;
             bottom: 20px;
             right: 20px;
             background: white;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             z-index: 999;
+            border-left: 4px solid #10b981;
         }
-
-        .status.ok { background: #dcfce7; color: #166534; }
-        .status.warning { background: #fee2e2; color: #991b1b; }
 
         @media (max-width: 768px) {
             .hamburger { display: flex; }
-            
-            nav {
-                display: none;
-            }
-
-            .auth-section {
-                display: none;
-            }
-
-            .hero h1 { font-size: 2.2rem; }
-            .hero { padding: 4rem 1.5rem; }
-            .hero p { font-size: 0.95rem; }
-
-            .about-intro { 
-                grid-template-columns: 1fr;
-                padding: 2rem;
-                gap: 2rem;
-            }
-
-            .about-intro-highlights { 
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1rem;
-            }
-
-            .about-intro-sidebar { gap: 0.75rem; }
-            .intro-badge { padding: 0.75rem; }
-            .intro-badge h3 { font-size: 0.75rem; }
-            .intro-badge p { font-size: 0.85rem; }
-
-            .featured-grid { grid-template-columns: 1fr; }
-            .portfolio-grid { grid-template-columns: 1fr; gap: 2rem; }
+            nav { display: none; }
+            .auth-section { display: none; }
+            .hero { padding: 3rem 1.5rem; margin: -3rem 0 2rem 0; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero .subtitle { font-size: 1.1rem; }
+            .cta-group { flex-direction: column; }
+            .cta-group .btn { width: 100%; }
+            .about-section { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
-            .blog-layout { grid-template-columns: 1fr; }
+            .featured-grid { grid-template-columns: 1fr; }
+            .portfolio-grid { grid-template-columns: 1fr; }
             .form-grid { grid-template-columns: 1fr; }
-
-            .cta-group { 
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            
-            .cta-group .btn { 
-                width: 100%;
-                font-size: 0.9rem;
-                padding: 0.65rem 1.25rem;
-            }
-
-            .section-title { font-size: 1.8rem; }
-            .section-subtitle { font-size: 0.9rem; }
-
-            .portfolio-block { padding: 1.5rem; }
-            .portfolio-block h3 { font-size: 1.2rem; }
-            .portfolio-block li { font-size: 0.9rem; }
-
-            .blog-card { padding: 1.5rem; }
-            .blog-title { font-size: 1.1rem; }
-            .blog-excerpt { font-size: 0.9rem; }
-
-            .blog-detail { padding: 1.5rem; }
-            .blog-detail-title { font-size: 1.8rem; }
-            .blog-detail-body { font-size: 0.95rem; }
-
-            .dashboard { padding: 1.5rem; }
-            .dashboard-header h2 { font-size: 1.5rem; }
-
-            .form-group input, .form-group textarea, .form-group select {
-                padding: 0.65rem;
-                font-size: 0.9rem;
-            }
-
-            .btn-submit-form, .btn-reset { 
-                padding: 0.65rem 1.5rem;
-                font-size: 0.9rem;
-            }
-
             .container { padding: 0 1rem; }
-            .nav-container { padding: 0 1rem; }
-
-            .hero { margin: -3rem 0 2rem 0; }
-
-            .featured-card { border-radius: 8px; }
-            .featured-image { height: 150px; }
-
-            .timeline-item { padding-bottom: 1.5rem; }
-            .timeline-title { font-size: 1rem; }
-            .timeline-desc { font-size: 0.9rem; }
-
-            .publication-item { padding: 1rem 0; }
-            .pub-title { font-size: 0.9rem; }
-            .pub-journal { font-size: 0.85rem; }
-
-            .top-post-title { font-size: 0.85rem; }
+            .section-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="status warning" id="status">⏳ Initializing...</div>
+    <div class="status" id="status">✅ Ready</div>
 
-    <!-- HEADER -->
     <header>
         <div class="nav-container">
-            <a href="#" class="logo" onclick="goHome(); return false;">OA</a>
-            <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+            <a class="logo" onclick="showHome()">OA</a>
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <nav>
-                <a onclick="goHome(); return false;">Home</a>
-                <a onclick="showSection('portfolio'); return false;">Portfolio</a>
-                <a onclick="showSection('blog'); return false;">Blog</a>
+                <a onclick="showHome()">Home</a>
+                <a onclick="showPage('portfolio')">Portfolio</a>
+                <a onclick="showPage('blog')">Blog</a>
             </nav>
             <div class="auth-section" id="desktopAuth">
-                <div id="authContainer">
-                    <button class="login-btn" onclick="openLoginModal()">Login</button>
-                </div>
+                <button class="login-btn" onclick="openLogin()">Login</button>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobileMenu">
-            <a onclick="goHome(); closeMobileMenu(); return false;">Home</a>
-            <a onclick="showSection('portfolio'); closeMobileMenu(); return false;">Portfolio</a>
-            <a onclick="showSection('blog'); closeMobileMenu(); return false;">Blog</a>
-            <div class="mobile-auth" id="mobileAuthContainer">
-                <button class="login-btn" onclick="openLoginModal(); closeMobileMenu();">Login</button>
+            <a onclick="showHome(); closeMenu();">Home</a>
+            <a onclick="showPage('portfolio'); closeMenu();">Portfolio</a>
+            <a onclick="showPage('blog'); closeMenu();">Blog</a>
+            <div class="mobile-auth" id="mobileAuth">
+                <button class="login-btn" onclick="openLogin(); closeMenu();">Login</button>
             </div>
         </div>
     </header>
 
-    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeLoginModal()">✕</button>
+            <button class="modal-close" onclick="closeLogin()">✕</button>
             <div class="modal-header">
                 <h2>Admin Login</h2>
             </div>
@@ -1187,111 +709,48 @@
                 </div>
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
-            <div class="demo-creds">
-                <strong>Demo Credentials:</strong><br>
-                Username: <code>admin</code><br>
-                Password: <code>password123</code>
-            </div>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div class="container">
-        <!-- HOME SECTION -->
+        <!-- HOME -->
         <section id="home" class="section active">
-            <!-- HERO -->
             <div class="hero">
-                <h1>Olalekan Adepoju</h1>
-                <p class="subtitle">PhD in Rhetoric & Composition</p>
-                <p>Empowering writers through transnational pedagogy, decolonizing academic spaces, and leveraging multilingual assets in writing instruction.</p>
-                <div class="cta-group">
-                    <a onclick="showSection('blog'); return false;" class="btn btn-primary">Read Blog</a>
-                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
+                <div class="hero-content">
+                    <h1>Olalekan Adepoju</h1>
+                    <p class="subtitle">PhD in Rhetoric & Composition</p>
+                    <p>Empowering writers through transnational pedagogy and decolonizing academic spaces for international and multilingual students.</p>
+                    <div class="cta-group">
+                        <a onclick="showPage('blog')" class="btn btn-primary">📖 Read Blog</a>
+                        <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- ABOUT INTRO -->
-            <div class="about-intro">
-                <div class="about-intro-text">
+            <div class="about-section">
+                <div class="about-text">
                     <h2>About Me</h2>
                     <p>I am an educator and researcher specializing in rhetoric, composition, and international writing pedagogy. With a PhD from the University of Louisville, my work focuses on empowering multilingual writers and decolonizing academic writing spaces through transnational approaches.</p>
-                    <p>Currently serving as an Instructor at the College of Staten Island, CUNY, I design and teach writing courses that recognize linguistic diversity as an asset. My research explores how writing instruction can better serve international and multilingual students by valuing their existing skills.</p>
-                    <div class="about-intro-highlights">
-                        <div class="highlight-item">
-                            <div class="highlight-number">15+</div>
-                            <div class="highlight-label">Publications & Reviews</div>
-                        </div>
-                        <div class="highlight-item">
-                            <div class="highlight-number">20+</div>
-                            <div class="highlight-label">Conference Presentations</div>
-                        </div>
-                        <div class="highlight-item">
-                            <div class="highlight-number">1000+</div>
-                            <div class="highlight-label">Students Impacted</div>
-                        </div>
-                    </div>
+                    <p>Currently serving as an Instructor at the College of Staten Island, CUNY, I design courses that recognize linguistic diversity as an asset. My research explores how writing instruction can better serve international and multilingual students.</p>
                 </div>
-                <div class="about-intro-sidebar">
-                    <div class="intro-badge">
-                        <h3>Primary Specialization</h3>
-                        <p>Writing Pedagogy & Composition</p>
+                <div>
+                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Specialization</h3>
+                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Writing Pedagogy</p>
                     </div>
-                    <div class="intro-badge">
-                        <h3>Research Focus</h3>
-                        <p>Transnational Writing Studies</p>
+                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Research Focus</h3>
+                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Transnational Writing</p>
                     </div>
-                    <div class="intro-badge">
-                        <h3>Current Position</h3>
-                        <p>Instructor, CUNY</p>
+                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Current Position</h3>
+                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Instructor, CUNY</p>
                     </div>
-                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation" style="text-align: center; width: 100%; margin-top: 0.5rem;">📅 Schedule Consultation</a>
                 </div>
             </div>
 
-            <!-- FEATURED POSTS -->
-            <div class="featured-section">
-                <h2 class="section-title">Featured Articles</h2>
-                <p class="section-subtitle">Explore my latest research and insights on writing pedagogy, composition studies, and international perspectives on academic writing.</p>
-                <div class="featured-grid" id="featuredGrid">
-                    <div style="text-align: center; grid-column: 1/-1; padding: 3rem; color: var(--text-light);">Loading articles...</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- PORTFOLIO SECTION -->
-        <section id="portfolio" class="section">
-            <h2 class="section-title">Professional Portfolio</h2>
-            <p class="section-subtitle">A comprehensive overview of my academic background, research focus, teaching experience, and scholarly contributions.</p>
-
-            <!-- EDUCATION & RESEARCH -->
-            <div class="portfolio-grid">
-                <div class="portfolio-block">
-                    <h3>🎓 Education</h3>
-                    <ul>
-                        <li><strong>PhD Rhetoric & Composition</strong><br><small>University of Louisville, 2023</small></li>
-                        <li><strong>M.A. English Language</strong><br><small>University of Ibadan, Nigeria, 2015</small></li>
-                        <li><strong>B.A. English Language & Education</strong><br><small>University of Ilorin, Nigeria, 2012</small></li>
-                    </ul>
-                </div>
-                <div class="portfolio-block">
-                    <h3>🔬 Research Areas</h3>
-                    <ul>
-                        <li>Transnational Writing Pedagogy</li>
-                        <li>Multilingual Writing Practices</li>
-                        <li>Writing Center Administration</li>
-                        <li>Rhetorical Genre Analysis</li>
-                        <li>Decolonizing Academic Writing</li>
-                        <li>Discourse & Sociolinguistics</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- STATISTICS -->
+            <h2 class="section-title">Professional Highlights</h2>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">5+</div>
-                    <div class="stat-label">Years in Higher Education</div>
-                </div>
                 <div class="stat-card">
                     <div class="stat-number">15+</div>
                     <div class="stat-label">Peer-Reviewed Publications</div>
@@ -1300,139 +759,52 @@
                     <div class="stat-number">20+</div>
                     <div class="stat-label">Conference Presentations</div>
                 </div>
-            </div>
-
-            <!-- EXPERIENCE -->
-            <div class="experience-timeline">
-                <h3>📍 Professional Experience</h3>
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <div class="timeline-title">Instructor</div>
-                            <div class="timeline-org">College of Staten Island, CUNY</div>
-                        </div>
-                        <div class="timeline-date">Present</div>
-                    </div>
-                    <div class="timeline-desc">Teaching college writing, business writing, and graduate-level writing across the curriculum courses. Coordinating writing program administration and serving as WAC coordinator.</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <div class="timeline-title">Assistant Director, Writing Center</div>
-                            <div class="timeline-org">University of Louisville</div>
-                        </div>
-                        <div class="timeline-date">2020-2022</div>
-                    </div>
-                    <div class="timeline-desc">Mentored writing center tutors, facilitated graduate and faculty writing groups, organized dissertation writing retreats, and designed presentations on writing topics.</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <div class="timeline-title">Writing Center Consultant</div>
-                            <div class="timeline-org">University of Louisville</div>
-                        </div>
-                        <div class="timeline-date">2019-2022</div>
-                    </div>
-                    <div class="timeline-desc">Conducted individual consultations with graduate and undergraduate students on writing of all types. Collaborated with 15+ consultants on 1200+ writing sessions annually.</div>
+                <div class="stat-card">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Students Impacted</div>
                 </div>
             </div>
 
-            <!-- TEACHING & AWARDS -->
-            <div class="portfolio-grid">
-                <div class="portfolio-block">
-                    <h3>📚 Courses Taught</h3>
-                    <ul>
-                        <li>Introduction to College Writing (Freshman)</li>
-                        <li>College Writing - ESL Section</li>
-                        <li>Business Writing</li>
-                        <li>Writing Across the Curriculum (Graduate)</li>
-                        <li>Research Methods & Academic Writing</li>
-                        <li>Writing in the Digital Age</li>
+            <h2 class="section-title">Featured Articles</h2>
+            <div class="featured-grid" id="featuredPosts">
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">Loading articles...</div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO -->
+        <section id="portfolio" class="section">
+            <h2 class="section-title">Professional Portfolio</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+                <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--accent);">
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem;">🎓 Education</h3>
+                    <ul style="list-style: none;">
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border); color: var(--text);"><strong>PhD Rhetoric & Composition</strong><br><small style="color: var(--text-light);">University of Louisville, 2023</small></li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border); color: var(--text);"><strong>M.A. English Language</strong><br><small style="color: var(--text-light);">University of Ibadan, Nigeria, 2015</small></li>
+                        <li style="padding: 0.75rem 0; color: var(--text);"><strong>B.A. English Language & Education</strong><br><small style="color: var(--text-light);">University of Ilorin, Nigeria, 2012</small></li>
                     </ul>
                 </div>
-                <div class="portfolio-block">
-                    <h3>🏆 Awards & Recognition</h3>
-                    <ul>
-                        <li>Bedford New Scholar, Macmillan Learning</li>
-                        <li>Graduate Student Dean Recognition</li>
-                        <li>Academic Merit Award, NCPTW</li>
-                        <li>Student Champion Award</li>
-                        <li>HASTAC Scholar</li>
-                        <li>Multiple Research Grants</li>
+
+                <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--gold);">
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem;">🔬 Research Areas</h3>
+                    <ul style="list-style: none;">
+                        <li style="padding: 0.5rem 0;">▸ Transnational Writing Pedagogy</li>
+                        <li style="padding: 0.5rem 0;">▸ Multilingual Writing Practices</li>
+                        <li style="padding: 0.5rem 0;">▸ Writing Center Administration</li>
+                        <li style="padding: 0.5rem 0;">▸ Rhetorical Genre Analysis</li>
+                        <li style="padding: 0.5rem 0;">▸ Decolonizing Academic Writing</li>
+                        <li style="padding: 0.5rem 0;">▸ Discourse & Sociolinguistics</li>
                     </ul>
-                </div>
-            </div>
-
-            <!-- PUBLICATIONS -->
-            <div class="publications-block">
-                <h3>📖 Selected Publications</h3>
-                
-                <div class="publication-item">
-                    <div class="pub-year">2024</div>
-                    <div class="pub-title">Adepoju, O.T. & Sharp, J. "Understanding the ideological force of graduate application materials: A rhetorical genre study of personal statement prompts."</div>
-                    <div class="pub-journal">Rhetoric Review, 43(3), 201-216.</div>
-                </div>
-
-                <div class="publication-item">
-                    <div class="pub-year">2023</div>
-                    <div class="pub-title">Adepoju, O.T. "Spatial metaphors in introductory statements of humanities and STEM disciplines: A study of English and Mechanical Engineering departments."</div>
-                    <div class="pub-journal">International Journal of Multidisciplinary Perspectives in Higher Education, 122-149.</div>
-                </div>
-
-                <div class="publication-item">
-                    <div class="pub-year">2022</div>
-                    <div class="pub-title">Adepoju, O.T. Book Review: "Internationalizing the Writing Center: A Guide for Developing a Multilingual Writing Center" by Noreen Groover Lape.</div>
-                    <div class="pub-journal">Journal of Second Language Writing, 55, 100878.</div>
-                </div>
-
-                <div class="publication-item">
-                    <div class="pub-year">2019</div>
-                    <div class="pub-title">Adepoju, O.T. "Island Constraints" in Contemporary Issues in Language Studies.</div>
-                    <div class="pub-journal">Edited by A.B. Sunday & F.O. Egbokhare, Scholarship Publishers, pp. 175-185.</div>
-                </div>
-
-                <div class="publication-item">
-                    <div class="pub-year">2018</div>
-                    <div class="pub-title">Adepoju, O.T. "Handling Public Faces: A Discursive Analysis of Buhari's 2015 Presidential Media Chat in Nigeria."</div>
-                    <div class="pub-journal">Discourse-stylistics, Sociolinguistics and Society: A Festschrift for Ayo Ogunsiji, Stirling-Horden Publishers.</div>
                 </div>
             </div>
         </section>
 
-        <!-- BLOG SECTION -->
+        <!-- BLOG -->
         <section id="blog" class="section">
             <h2 class="section-title">Blog</h2>
-            <div class="blog-layout">
-                <div>
-                    <ul class="blog-list" id="blogList">
-                        <li style="text-align: center; padding: 3rem; color: var(--text-light);">Loading posts...</li>
-                    </ul>
-                </div>
-                <div class="sidebar">
-                    <div class="sidebar-box">
-                        <h3>📌 About This Blog</h3>
-                        <p style="font-size: 0.95rem; color: var(--text-light); margin: 0;">Insights on writing pedagogy, composition studies, international perspectives on academic writing, and decolonizing academic spaces.</p>
-                    </div>
-                    <div class="sidebar-box">
-                        <h3>🔥 Top 5 Posts</h3>
-                        <ul class="top-posts-list" id="topPostsSidebar"></ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- BLOG DETAIL -->
-        <section id="blogDetail" class="section">
-            <div class="blog-detail">
-                <div class="blog-detail-header" id="blogDetailHeader"></div>
-                <img id="blogDetailImage" class="blog-detail-image" style="display: none;">
-                <div class="blog-detail-body" id="blogDetailBody"></div>
-                <div class="blog-detail-footer">
-                    <p>Want to discuss writing pedagogy or academic writing instruction?</p>
-                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Schedule Free Consultation</a>
-                    <button onclick="showSection('blog')" class="btn btn-secondary" style="margin-left: 1rem;">← Back to Blog</button>
-                </div>
-            </div>
+            <ul class="blog-list" id="blogList">
+                <li style="text-align: center; padding: 3rem; color: var(--text-light);">Loading posts...</li>
+            </ul>
         </section>
 
         <!-- DASHBOARD -->
@@ -1440,7 +812,7 @@
             <div class="dashboard">
                 <div class="dashboard-header">
                     <h2>Blog Management Dashboard</h2>
-                    <p>Create, edit, and manage your blog posts</p>
+                    <p style="color: var(--text-light); margin-top: 0.5rem;">Create and manage your blog posts</p>
                 </div>
 
                 <div class="tabs-container">
@@ -1448,7 +820,6 @@
                     <button class="tab-btn" onclick="switchTab(1)">Manage Posts</button>
                 </div>
 
-                <!-- CREATE POST -->
                 <div class="tab-content active">
                     <div class="success-alert" id="successAlert"></div>
                     <form onsubmit="createPost(event)">
@@ -1461,19 +832,16 @@
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Publication Date *</label>
+                                <label>Date *</label>
                                 <input type="date" id="postDate" required>
                             </div>
                             <div class="form-group">
                                 <label>Category *</label>
                                 <select id="postCategory" required>
-                                    <option value="">Select Category</option>
+                                    <option value="">Select</option>
                                     <option value="Writing Pedagogy">Writing Pedagogy</option>
                                     <option value="Composition Studies">Composition Studies</option>
                                     <option value="International Writing">International Writing</option>
-                                    <option value="Language & Discourse">Language & Discourse</option>
-                                    <option value="Research Insights">Research Insights</option>
-                                    <option value="Teaching Tips">Teaching Tips</option>
                                 </select>
                             </div>
                         </div>
@@ -1487,18 +855,7 @@
 
                         <div class="form-grid full">
                             <div class="form-group">
-                                <label>Featured Image (Optional)</label>
-                                <input type="file" id="postImage" accept="image/*" onchange="previewImage(event)">
-                                <div class="image-preview" id="imagePreview" style="display: none;">
-                                    <img id="previewImg" src="">
-                                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">✓ Image selected</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-grid full">
-                            <div class="form-group">
-                                <label>Full Content *</label>
+                                <label>Content *</label>
                                 <textarea id="postContent" required></textarea>
                             </div>
                         </div>
@@ -1517,7 +874,6 @@
                     </form>
                 </div>
 
-                <!-- MANAGE POSTS -->
                 <div class="tab-content">
                     <ul class="posts-list" id="postsManageList">
                         <li style="text-align: center; padding: 2rem;">Loading...</li>
@@ -1527,360 +883,161 @@
         </section>
     </div>
 
-    <!-- FOOTER -->
     <footer>
-        <p><strong>Olalekan Tunde Adepoju, PhD</strong></p>
+        <p style="font-size: 1.2rem;"><strong>Olalekan Tunde Adepoju, PhD</strong></p>
         <p>Educator | Researcher | Writing Specialist</p>
-        <p style="margin-top: 1rem;">
-            <a href="/cdn-cgi/l/email-protection#95faf9f4f9f0fef4fbf4f1f0e5faffe0a4add5f2f8f4fcf9bbf6faf8">📧 Email</a> | 
+        <p style="margin-top: 1.5rem;">
+            <a href="mailto:olalekanadepoju18@gmail.com">📧 Email</a> | 
             <a href="tel:+15025316870">📱 (502) 531-6870</a> | 
             <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank">📅 Book Consultation</a>
         </p>
-        <p style="margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.8;">© 2024 Olalekan Adepoju. All rights reserved.</p>
+        <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">© 2024 Olalekan Adepoju. All rights reserved.</p>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok",
-            authDomain: "olalekan-adepoju.firebaseapp.com",
-            databaseURL: "https://olalekan-adepoju-default-rtdb.firebaseio.com",
-            projectId: "olalekan-adepoju",
-            storageBucket: "olalekan-adepoju.firebasestorage.app",
-            messagingSenderId: "1065010888647",
-            appId: "1:1065010888647:web:32620c897c385c2f17a3e2"
-        };
+    <script>
+        let blogs = [{
+            id: 1,
+            title: "Transnational Writing Pedagogy",
+            date: "2024-01-15",
+            category: "Writing Pedagogy",
+            excerpt: "Exploring how writing centers can serve international students.",
+            content: "Writing centers have traditionally focused on helping students conform to Standard English conventions.",
+            readTime: 8,
+            views: 5
+        }];
 
-        let db = null;
-        let blogs = [];
         let isLoggedIn = false;
+        let db = null;
 
-        // Wait for Firebase SDK to load
         function initFirebase() {
             if (typeof firebase === 'undefined') {
                 setTimeout(initFirebase, 100);
                 return;
             }
-            
+
             try {
+                const config = {
+                    apiKey: "AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok",
+                    authDomain: "olalekan-adepoju.firebaseapp.com",
+                    databaseURL: "https://olalekan-adepoju-default-rtdb.firebaseio.com",
+                    projectId: "olalekan-adepoju",
+                    storageBucket: "olalekan-adepoju.firebasestorage.app",
+                    messagingSenderId: "1065010888647",
+                    appId: "1:1065010888647:web:32620c897c385c2f17a3e2"
+                };
+
                 if (firebase.apps.length === 0) {
-                    firebase.initializeApp(firebaseConfig);
+                    firebase.initializeApp(config);
                 }
                 db = firebase.database();
-                console.log("✅ Firebase initialized!");
-                document.getElementById('status').textContent = '✅ Firebase Ready';
-                document.getElementById('status').classList.remove('warning');
-                document.getElementById('status').classList.add('ok');
-            } catch (error) {
-                console.error("Firebase error:", error);
+                loadBlogs();
+            } catch (e) {
+                console.error('Firebase error:', e);
             }
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFirebase);
-        } else {
-            initFirebase();
         }
 
         function loadBlogs() {
-            db.ref('blogs').once('value', snapshot => {
-                if (snapshot.exists()) {
-                    blogs = Object.values(snapshot.val());
-                    console.log('✅ Loaded', blogs.length, 'posts');
-                } else {
-                    blogs = getDefaultBlogs();
+            if (!db) return;
+            db.ref('blogs').once('value', snap => {
+                if (snap.exists()) {
+                    blogs = Object.values(snap.val());
                 }
                 updateBlogDisplay();
-                updateFeaturedPosts();
             });
-        }
-
-        function getDefaultBlogs() {
-            return [
-                {
-                    id: 1,
-                    title: "Transnational Approaches to Writing Center Pedagogy",
-                    date: "2024-01-15",
-                    category: "Writing Pedagogy",
-                    excerpt: "Exploring how writing centers can serve international graduate students by recognizing their linguistic and cultural assets.",
-                    content: "Writing centers have traditionally focused on helping students conform to Standard English conventions. However, this approach often treats multilingual and international writers' language practices as deficits rather than assets.\n\nIn this article, we explore transnational approaches that recognize the value of diverse linguistic practices. By shifting our perspective from deficit-based to asset-based thinking, we can create more inclusive and empowering writing center spaces.",
-                    readTime: 8,
-                    views: 342,
-                    image: null
-                },
-                {
-                    id: 2,
-                    title: "Decolonizing Academic Writing: A Practical Framework",
-                    date: "2023-12-20",
-                    category: "Composition Studies",
-                    excerpt: "Strategies for decolonizing writing instruction and making academic writing more inclusive and culturally responsive.",
-                    content: "Academic writing has long been dominated by Western traditions and conventions. Decolonizing academic writing means examining these assumptions and creating space for diverse epistemic traditions.",
-                    readTime: 10,
-                    views: 287,
-                    image: null
-                },
-                {
-                    id: 3,
-                    title: "The Power of Multilingual Writing Practices",
-                    date: "2023-11-10",
-                    category: "International Writing",
-                    excerpt: "How multilingual writers can leverage their language repertoires as strengths rather than deficits.",
-                    content: "Multilingual writers bring tremendous assets to academic writing. Yet, they are often positioned as lacking rather than as bringing unique resources.",
-                    readTime: 7,
-                    views: 215,
-                    image: null
-                }
-            ];
         }
 
         function saveBlogsToFirebase() {
-            const blogsObj = {};
-            blogs.forEach(blog => blogsObj[blog.id] = blog);
+            if (!db) return;
+            const obj = {};
+            blogs.forEach(b => obj[b.id] = b);
+            db.ref('blogs').set(obj);
+        }
+
+        function updateBlogDisplay() {
+            const list = document.getElementById('blogList');
+            list.innerHTML = blogs.map(b => `
+                <li class="blog-card" onclick="viewPost(${b.id})">
+                    <h3 class="blog-title">${b.title}</h3>
+                    <span class="blog-category">${b.category}</span>
+                    <div class="blog-meta">
+                        <span>📅 ${new Date(b.date).toLocaleDateString()}</span>
+                        <span>⏱ ${b.readTime} min</span>
+                        <span>👁 ${b.views} views</span>
+                    </div>
+                    <p class="blog-excerpt">${b.excerpt}</p>
+                </li>
+            `).join('');
+
+            updateFeaturedPosts();
+        }
+
+        function updateFeaturedPosts() {
+            const featured = document.getElementById('featuredPosts');
+            const top3 = [...blogs].sort((a, b) => b.views - a.views).slice(0, 3);
             
-            db.ref('blogs').set(blogsObj, error => {
-                if (error) {
-                    console.error('❌ Save error:', error);
-                    showSuccess('❌ Failed to save');
-                } else {
-                    console.log('✅ Saved to Firebase!');
-                    showSuccess('✅ Post published!');
-                    loadBlogs();
-                }
-            });
+            featured.innerHTML = top3.map(b => `
+                <div class="featured-card" onclick="viewPost(${b.id})">
+                    <span class="featured-category">${b.category}</span>
+                    <h3 class="featured-title">${b.title}</h3>
+                    <div class="featured-meta">
+                        <span>📅 ${new Date(b.date).toLocaleDateString()}</span>
+                        <span>⏱ ${b.readTime} min</span>
+                    </div>
+                    <p class="featured-excerpt">${b.excerpt}</p>
+                </div>
+            `).join('');
         }
 
-        function openLoginModal() {
-            document.getElementById('loginModal').classList.add('active');
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.remove('active');
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === 'admin' && password === 'password123') {
-                isLoggedIn = true;
-                closeLoginModal();
-                updateAuthUI();
-                showSection('dashboard');
-                showSuccess('✅ Logged in!');
-            } else {
-                document.getElementById('errorMsg').textContent = '❌ Invalid credentials';
-                document.getElementById('errorMsg').classList.add('show');
-            }
-        }
-
-        function logout() {
-            isLoggedIn = false;
-            updateAuthUI();
-            showSection('home');
-        }
-
-        function updateAuthUI() {
-            const desktopContainer = document.getElementById('authContainer');
-            const mobileContainer = document.getElementById('mobileAuthContainer');
-            
-            if (isLoggedIn) {
-                desktopContainer.innerHTML = `
-                    <span class="user-info">👤 admin</span>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
-                `;
-                mobileContainer.innerHTML = `
-                    <span class="user-info">👤 admin</span>
-                    <button class="logout-btn" onclick="logout(); closeMobileMenu();">Logout</button>
-                `;
-            } else {
-                desktopContainer.innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
-                mobileContainer.innerHTML = `<button class="login-btn" onclick="openLoginModal(); closeMobileMenu();">Login</button>`;
+        function viewPost(id) {
+            const post = blogs.find(b => b.id === id);
+            if (post) {
+                post.views++;
+                saveBlogsToFirebase();
+                alert(`${post.title}\n\n${post.content}`);
+                updateBlogDisplay();
             }
         }
 
         function createPost(e) {
             e.preventDefault();
-            const imageInput = document.getElementById('postImage');
-            let imageData = null;
+            const newPost = {
+                id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
+                title: document.getElementById('postTitle').value,
+                date: document.getElementById('postDate').value,
+                category: document.getElementById('postCategory').value,
+                excerpt: document.getElementById('postExcerpt').value,
+                content: document.getElementById('postContent').value,
+                readTime: parseInt(document.getElementById('postReadTime').value),
+                views: 0
+            };
 
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    imageData = reader.result;
-                    savePost(imageData);
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                savePost(null);
-            }
-
-            function savePost(image) {
-                const newPost = {
-                    id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
-                    title: document.getElementById('postTitle').value,
-                    date: document.getElementById('postDate').value,
-                    category: document.getElementById('postCategory').value,
-                    excerpt: document.getElementById('postExcerpt').value,
-                    content: document.getElementById('postContent').value,
-                    readTime: parseInt(document.getElementById('postReadTime').value),
-                    views: 0,
-                    image: image
-                };
-
-                blogs.unshift(newPost);
-                saveBlogsToFirebase();
-
-                document.querySelector('.tab-content form').reset();
-                document.getElementById('imagePreview').style.display = 'none';
-            }
-        }
-
-        function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function updateBlogDisplay() {
-            const blogList = document.getElementById('blogList');
-            if (blogs.length === 0) {
-                blogList.innerHTML = '<li style="text-align: center; padding: 3rem; color: var(--text-light);">No posts yet</li>';
-                return;
-            }
-
-            blogList.innerHTML = blogs.map(blog => `
-                <li class="blog-card" onclick="viewBlogPost(${blog.id})">
-                    <h3 class="blog-title">${blog.title}</h3>
-                    <span class="blog-category">${blog.category}</span>
-                    <div class="blog-meta">
-                        <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
-                        <span>⏱ ${blog.readTime} min</span>
-                        <span>👁 ${blog.views} views</span>
-                    </div>
-                    <p class="blog-excerpt">${blog.excerpt}</p>
-                    <span class="read-btn">Read More →</span>
-                </li>
-            `).join('');
-
-            updateTopPosts();
-        }
-
-        function updateFeaturedPosts() {
-            const top3 = [...blogs].sort((a, b) => b.views - a.views).slice(0, 3);
-            const grid = document.getElementById('featuredGrid');
-
-            if (top3.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem;">No posts yet</div>';
-                return;
-            }
-
-            grid.innerHTML = top3.map((blog, i) => `
-                <div class="featured-card" onclick="viewBlogPost(${blog.id})">
-                    <div class="featured-image">
-                        ${blog.image ? `<img src="${blog.image}">` : '<span>#' + (i+1) + '</span>'}
-                    </div>
-                    <div class="featured-content">
-                        <span class="featured-category">${blog.category}</span>
-                        <h3 class="featured-title">${blog.title}</h3>
-                        <div class="featured-meta">
-                            <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
-                            <span>⏱ ${blog.readTime} min</span>
-                        </div>
-                        <p class="featured-excerpt">${blog.excerpt}</p>
-                        <span class="read-more">Read More →</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateTopPosts() {
-            const top5 = [...blogs].sort((a, b) => b.views - a.views).slice(0, 5);
-            const sidebar = document.getElementById('topPostsSidebar');
-
-            if (top5.length === 0) {
-                sidebar.innerHTML = '<li style="text-align: center; padding: 1rem;">No posts yet</li>';
-                return;
-            }
-
-            sidebar.innerHTML = top5.map(blog => `
-                <li class="top-post-item">
-                    <div class="top-post-title" onclick="viewBlogPost(${blog.id})">${blog.title}</div>
-                    <div class="top-post-meta">👁 ${blog.views} views</div>
-                </li>
-            `).join('');
-        }
-
-        function viewBlogPost(id) {
-            const blog = blogs.find(b => b.id === id);
-            if (blog) {
-                blog.views += 1;
-                saveBlogsToFirebase();
-
-                document.getElementById('blogDetailHeader').innerHTML = `
-                    <h1 class="blog-detail-title">${blog.title}</h1>
-                    <div class="blog-detail-meta">
-                        <span>${blog.category}</span>
-                        <span>📅 ${new Date(blog.date).toLocaleDateString()}</span>
-                        <span>⏱ ${blog.readTime} min read</span>
-                        <span>👁 ${blog.views} views</span>
-                    </div>
-                `;
-
-                if (blog.image) {
-                    document.getElementById('blogDetailImage').src = blog.image;
-                    document.getElementById('blogDetailImage').style.display = 'block';
-                } else {
-                    document.getElementById('blogDetailImage').style.display = 'none';
-                }
-
-                document.getElementById('blogDetailBody').textContent = blog.content;
-                showSection('blogDetail');
-                window.scrollTo(0, 0);
-            }
-        }
-
-        function updateManagePostsList() {
-            const postsList = document.getElementById('postsManageList');
-            if (blogs.length === 0) {
-                postsList.innerHTML = '<li style="text-align: center; padding: 2rem;">No posts</li>';
-                return;
-            }
-
-            postsList.innerHTML = blogs.map(blog => `
-                <li class="post-item">
-                    <div class="post-info">
-                        <h4>${blog.title}</h4>
-                        <p><strong>Category:</strong> ${blog.category}</p>
-                        <p><strong>Views:</strong> ${blog.views}</p>
-                    </div>
-                    <button class="btn-delete" onclick="deletePost(${blog.id})">Delete</button>
-                </li>
-            `).join('');
+            blogs.unshift(newPost);
+            saveBlogsToFirebase();
+            e.target.reset();
+            showSuccess('✅ Post published!');
+            updateBlogDisplay();
         }
 
         function deletePost(id) {
             if (confirm('Delete this post?')) {
                 blogs = blogs.filter(b => b.id !== id);
                 saveBlogsToFirebase();
-                updateManagePostsList();
+                updateManageList();
             }
         }
 
-        function switchTab(tabIndex) {
-            const tabs = document.querySelectorAll('.tab-content');
-            const btns = document.querySelectorAll('.tab-btn');
-            
-            tabs.forEach((t, i) => t.classList.toggle('active', i === tabIndex));
-            btns.forEach((b, i) => b.classList.toggle('active', i === tabIndex));
-            
-            if (tabIndex === 1) updateManagePostsList();
+        function updateManageList() {
+            const list = document.getElementById('postsManageList');
+            list.innerHTML = blogs.map(b => `
+                <li class="post-item">
+                    <div class="post-info">
+                        <h4>${b.title}</h4>
+                        <p><strong>Category:</strong> ${b.category}</p>
+                        <p><strong>Views:</strong> ${b.views}</p>
+                    </div>
+                    <button class="btn-delete" onclick="deletePost(${b.id})">Delete</button>
+                </li>
+            `).join('');
         }
 
         function showSuccess(msg) {
@@ -1890,23 +1047,95 @@
             setTimeout(() => alert.classList.remove('show'), 3000);
         }
 
-        function showSection(id) {
+        function openLogin() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (user === 'admin' && pass === 'password123') {
+                isLoggedIn = true;
+                closeLogin();
+                updateAuthUI();
+                showPage('dashboard');
+                showSuccess('✅ Logged in!');
+            } else {
+                document.getElementById('errorMsg').textContent = '❌ Invalid credentials';
+                document.getElementById('errorMsg').classList.add('show');
+            }
+        }
+
+        function updateAuthUI() {
+            const desktop = document.getElementById('desktopAuth');
+            const mobile = document.getElementById('mobileAuth');
+            
+            if (isLoggedIn) {
+                desktop.innerHTML = `<span class="user-info">👤 admin</span><button class="logout-btn" onclick="logout()">Logout</button>`;
+                mobile.innerHTML = `<span class="user-info">👤 admin</span><button class="logout-btn" onclick="logout()">Logout</button>`;
+            } else {
+                desktop.innerHTML = `<button class="login-btn" onclick="openLogin()">Login</button>`;
+                mobile.innerHTML = `<button class="login-btn" onclick="openLogin(); closeMenu();">Login</button>`;
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            updateAuthUI();
+            showHome();
+        }
+
+        function toggleMenu() {
+            document.getElementById('hamburger').classList.toggle('active');
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        function closeMenu() {
+            document.getElementById('hamburger').classList.remove('active');
+            document.getElementById('mobileMenu').classList.remove('active');
+        }
+
+        function showHome() {
+            showPage('home');
+        }
+
+        function showPage(id) {
             if (id === 'dashboard' && !isLoggedIn) {
-                openLoginModal();
+                openLogin();
                 return;
             }
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            closeMobileMenu();
+            closeMenu();
         }
 
-        function goHome() {
-            showSection('home');
+        function switchTab(i) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-btn');
+            tabs.forEach((t, idx) => t.classList.toggle('active', idx === i));
+            btns.forEach((b, idx) => b.classList.toggle('active', idx === i));
+            if (i === 1) updateManageList();
         }
 
         window.addEventListener('load', () => {
-            loadBlogs();
+            initFirebase();
+            updateBlogDisplay();
+            updateAuthUI();
         });
 
         window.onclick = (e) => {
-   
+            const modal = document.getElementById('loginModal');
+            if (e.target === modal) closeLogin();
+        };
+    </script>
+</body>
+</html>
