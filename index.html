@@ -7,6 +7,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Mobile menu functions - Load early
+        function toggleMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+        }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -50,6 +66,36 @@
             text-decoration: none;
         }
 
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
         nav {
             display: flex;
             gap: 2.5rem;
@@ -70,6 +116,70 @@
         .auth-section {
             display: flex;
             gap: 1rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            flex-direction: column;
+            padding: 1.5rem;
+            z-index: 99;
+            max-height: calc(100vh - 70px);
+            overflow-y: auto;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--gold);
+        }
+
+        .mobile-menu a:last-of-type {
+            border-bottom: none;
+        }
+
+        .mobile-auth {
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+        }
+
+        .mobile-auth .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .mobile-auth .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .mobile-auth .user-info {
+            display: block;
+            padding: 1rem 0;
+            text-align: left;
+            font-size: 0.9rem;
         }
 
         .login-btn, .logout-btn {
@@ -928,16 +1038,98 @@
         .status.warning { background: #fee2e2; color: #991b1b; }
 
         @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            
+            nav {
+                display: none;
+            }
+
+            .auth-section {
+                display: none;
+            }
+
             .hero h1 { font-size: 2.2rem; }
-            .about-intro { grid-template-columns: 1fr; }
-            .about-intro-highlights { grid-template-columns: repeat(2, 1fr); }
+            .hero { padding: 4rem 1.5rem; }
+            .hero p { font-size: 0.95rem; }
+
+            .about-intro { 
+                grid-template-columns: 1fr;
+                padding: 2rem;
+                gap: 2rem;
+            }
+
+            .about-intro-highlights { 
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .about-intro-sidebar { gap: 0.75rem; }
+            .intro-badge { padding: 0.75rem; }
+            .intro-badge h3 { font-size: 0.75rem; }
+            .intro-badge p { font-size: 0.85rem; }
+
             .featured-grid { grid-template-columns: 1fr; }
-            .portfolio-grid { grid-template-columns: 1fr; }
+            .portfolio-grid { grid-template-columns: 1fr; gap: 2rem; }
             .stats-grid { grid-template-columns: 1fr; }
             .blog-layout { grid-template-columns: 1fr; }
             .form-grid { grid-template-columns: 1fr; }
-            .cta-group { flex-direction: column; }
-            .cta-group .btn { width: 100%; }
+
+            .cta-group { 
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .cta-group .btn { 
+                width: 100%;
+                font-size: 0.9rem;
+                padding: 0.65rem 1.25rem;
+            }
+
+            .section-title { font-size: 1.8rem; }
+            .section-subtitle { font-size: 0.9rem; }
+
+            .portfolio-block { padding: 1.5rem; }
+            .portfolio-block h3 { font-size: 1.2rem; }
+            .portfolio-block li { font-size: 0.9rem; }
+
+            .blog-card { padding: 1.5rem; }
+            .blog-title { font-size: 1.1rem; }
+            .blog-excerpt { font-size: 0.9rem; }
+
+            .blog-detail { padding: 1.5rem; }
+            .blog-detail-title { font-size: 1.8rem; }
+            .blog-detail-body { font-size: 0.95rem; }
+
+            .dashboard { padding: 1.5rem; }
+            .dashboard-header h2 { font-size: 1.5rem; }
+
+            .form-group input, .form-group textarea, .form-group select {
+                padding: 0.65rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-submit-form, .btn-reset { 
+                padding: 0.65rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .container { padding: 0 1rem; }
+            .nav-container { padding: 0 1rem; }
+
+            .hero { margin: -3rem 0 2rem 0; }
+
+            .featured-card { border-radius: 8px; }
+            .featured-image { height: 150px; }
+
+            .timeline-item { padding-bottom: 1.5rem; }
+            .timeline-title { font-size: 1rem; }
+            .timeline-desc { font-size: 0.9rem; }
+
+            .publication-item { padding: 1rem 0; }
+            .pub-title { font-size: 0.9rem; }
+            .pub-journal { font-size: 0.85rem; }
+
+            .top-post-title { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -948,15 +1140,30 @@
     <header>
         <div class="nav-container">
             <a href="#" class="logo" onclick="goHome(); return false;">OA</a>
+            <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <nav>
                 <a onclick="goHome(); return false;">Home</a>
                 <a onclick="showSection('portfolio'); return false;">Portfolio</a>
                 <a onclick="showSection('blog'); return false;">Blog</a>
             </nav>
-            <div class="auth-section">
+            <div class="auth-section" id="desktopAuth">
                 <div id="authContainer">
                     <button class="login-btn" onclick="openLoginModal()">Login</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a onclick="goHome(); closeMobileMenu(); return false;">Home</a>
+            <a onclick="showSection('portfolio'); closeMobileMenu(); return false;">Portfolio</a>
+            <a onclick="showSection('blog'); closeMobileMenu(); return false;">Blog</a>
+            <div class="mobile-auth" id="mobileAuthContainer">
+                <button class="login-btn" onclick="openLoginModal(); closeMobileMenu();">Login</button>
             </div>
         </div>
     </header>
@@ -1325,14 +1532,14 @@
         <p><strong>Olalekan Tunde Adepoju, PhD</strong></p>
         <p>Educator | Researcher | Writing Specialist</p>
         <p style="margin-top: 1rem;">
-            <a href="mailto:olalekanadepoju18@gmail.com">📧 Email</a> | 
+            <a href="/cdn-cgi/l/email-protection#95faf9f4f9f0fef4fbf4f1f0e5faffe0a4add5f2f8f4fcf9bbf6faf8">📧 Email</a> | 
             <a href="tel:+15025316870">📱 (502) 531-6870</a> | 
             <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank">📅 Book Consultation</a>
         </p>
         <p style="margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.8;">© 2024 Olalekan Adepoju. All rights reserved.</p>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         const firebaseConfig = {
             apiKey: "AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok",
             authDomain: "olalekan-adepoju.firebaseapp.com",
@@ -1474,14 +1681,21 @@
         }
 
         function updateAuthUI() {
-            const container = document.getElementById('authContainer');
+            const desktopContainer = document.getElementById('authContainer');
+            const mobileContainer = document.getElementById('mobileAuthContainer');
+            
             if (isLoggedIn) {
-                container.innerHTML = `
+                desktopContainer.innerHTML = `
                     <span class="user-info">👤 admin</span>
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 `;
+                mobileContainer.innerHTML = `
+                    <span class="user-info">👤 admin</span>
+                    <button class="logout-btn" onclick="logout(); closeMobileMenu();">Logout</button>
+                `;
             } else {
-                container.innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+                desktopContainer.innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+                mobileContainer.innerHTML = `<button class="login-btn" onclick="openLoginModal(); closeMobileMenu();">Login</button>`;
             }
         }
 
@@ -1683,6 +1897,7 @@
             }
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            closeMobileMenu();
         }
 
         function goHome() {
@@ -1694,9 +1909,4 @@
         });
 
         window.onclick = (e) => {
-            const modal = document.getElementById('loginModal');
-            if (e.target === modal) closeLoginModal();
-        };
-    </script>
-</body>
-</html>
+   
