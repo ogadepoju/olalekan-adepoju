@@ -3,80 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olalekan Adepoju, PhD - Rhetoric & Composition Specialist</title>
+    <title>Olalekan Adepoju, PhD</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <script>
+        let blogs = [{id: 1, title: "Transnational Writing Pedagogy", date: "2024-01-15", category: "Writing Pedagogy", excerpt: "Exploring how writing centers can serve international students.", content: "Writing centers have traditionally focused on helping students conform to Standard English conventions.\n\nThis approach often treats multilingual and international writers' language practices as deficits rather than assets. In this article, we explore transnational approaches that recognize the value of diverse linguistic practices.", readTime: 8, views: 15}, {id: 2, title: "Decolonizing Academic Writing", date: "2024-02-10", category: "Composition Studies", excerpt: "Strategies for making writing instruction more inclusive.", content: "Academic writing has long been dominated by Western traditions.\n\nDecolonizing academic writing means examining these assumptions and creating space for diverse epistemic traditions and ways of knowing.", readTime: 10, views: 12}, {id: 3, title: "Multilingual Writing Assets", date: "2024-03-05", category: "International Writing", excerpt: "How to leverage multilingual practices in writing.", content: "Multilingual writers bring tremendous assets to academic writing.\n\nYet they are often positioned as lacking rather than as bringing unique resources.", readTime: 7, views: 8}];
+        let isLoggedIn = false;
+        let db = null;
+
+        function toggleMenu() { const m = document.getElementById('mobileMenu'); m.classList.toggle('active'); document.body.style.overflow = m.classList.contains('active') ? 'hidden' : 'auto'; }
+        function closeMenu() { const m = document.getElementById('mobileMenu'); m.classList.remove('active'); document.body.style.overflow = 'auto'; }
+        function showPage(id) { if (id === 'dashboard' && !isLoggedIn) { openLogin(); return; } document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); closeMenu(); window.scrollTo(0, 0); }
+        function openLogin() { document.getElementById('loginModal').classList.add('active'); }
+        function closeLogin() { document.getElementById('loginModal').classList.remove('active'); document.getElementById('username').value = ''; document.getElementById('password').value = ''; document.getElementById('errorMsg').classList.remove('show'); }
+        function handleLogin(e) { e.preventDefault(); const u = document.getElementById('username').value; const p = document.getElementById('password').value; if (u === 'admin' && p === 'password123') { isLoggedIn = true; closeLogin(); updateAuthUI(); showPage('dashboard'); showSuccess('✅ Logged in!'); } else { document.getElementById('errorMsg').textContent = '❌ Invalid'; document.getElementById('errorMsg').classList.add('show'); } }
+        function logout() { isLoggedIn = false; updateAuthUI(); showPage('home'); closeMenu(); }
+        function updateAuthUI() { const m = document.getElementById('mobileAuth'); if (isLoggedIn) { m.innerHTML = `<span style="color:var(--gold);font-weight:600;display:block;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.2);">👤 admin</span><button style="width:100%;padding:0.75rem;border:1px solid var(--gold);background:transparent;color:var(--white);border-radius:6px;cursor:pointer;font-weight:600;" onclick="logout()">Logout</button>`; } else { m.innerHTML = `<button style="width:100%;padding:0.75rem;border:none;background:var(--accent);color:var(--white);border-radius:6px;cursor:pointer;font-weight:600;" onclick="openLogin()">Login</button>`; } }
+        function initFirebase() { if (typeof firebase === 'undefined') { setTimeout(initFirebase, 100); return; } try { const c = {apiKey:"AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok", authDomain:"olalekan-adepoju.firebaseapp.com", databaseURL:"https://olalekan-adepoju-default-rtdb.firebaseio.com", projectId:"olalekan-adepoju", storageBucket:"olalekan-adepoju.firebasestorage.app", messagingSenderId:"1065010888647", appId:"1:1065010888647:web:32620c897c385c2f17a3e2"}; if (firebase.apps.length === 0) { firebase.initializeApp(c); } db = firebase.database(); loadBlogs(); } catch (e) { console.error('Firebase:', e); } }
+        function loadBlogs() { if (!db) return; db.ref('blogs').once('value', snap => { if (snap.exists()) { blogs = Object.values(snap.val()); } updateBlogDisplay(); }); }
+        function saveBlogsToFirebase() { if (!db) return; const o = {}; blogs.forEach(b => o[b.id] = b); db.ref('blogs').set(o); }
+        function updateBlogDisplay() { const l = document.getElementById('blogList'); if (!l) return; l.innerHTML = blogs.map(b => `<li style="background:var(--white);border-radius:10px;padding:2rem;margin-bottom:2rem;border-left:4px solid var(--accent);box-shadow:0 4px 20px rgba(0,0,0,0.08);cursor:pointer;" onclick="viewPost(${b.id})"><h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--primary);margin-bottom:0.75rem;">${b.title}</h3><span style="display:inline-block;background:var(--accent);color:var(--white);padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-bottom:0.75rem;">${b.category}</span><div style="display:flex;gap:1.5rem;margin-bottom:1rem;font-size:0.9rem;color:var(--text-light);"><span>📅 ${new Date(b.date).toLocaleDateString()}</span><span>⏱ ${b.readTime} min</span><span>👁 ${b.views} views</span></div><p style="color:var(--text-light);">${b.excerpt}</p></li>`).join(''); updateFeaturedPosts(); }
+        function updateFeaturedPosts() { const f = document.getElementById('featuredPosts'); if (!f) return; const t = blogs.slice(0, 3); f.innerHTML = t.map(b => `<div style="background:var(--white);border-radius:12px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,0.08);cursor:pointer;border-left:5px solid var(--accent);transition:all 0.3s ease;" onclick="viewPost(${b.id})"><span style="display:inline-block;background:var(--accent);color:var(--white);padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-bottom:0.75rem;">${b.category}</span><h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--primary);margin-bottom:0.75rem;">${b.title}</h3><div style="display:flex;gap:1rem;margin-bottom:0.75rem;font-size:0.85rem;color:var(--text-light);"><span>📅 ${new Date(b.date).toLocaleDateString()}</span><span>⏱ ${b.readTime} min</span></div><p style="color:var(--text-light);">${b.excerpt}</p></div>`).join(''); }
+        function viewPost(id) { const p = blogs.find(b => b.id === id); if (p) { p.views++; saveBlogsToFirebase(); document.getElementById('detailTitle').textContent = p.title; document.getElementById('detailCategory').textContent = p.category; document.getElementById('detailMeta').innerHTML = `<span>📅 ${new Date(p.date).toLocaleDateString()}</span><span>⏱ ${p.readTime} min read</span><span>👁 ${p.views} views</span>`; document.getElementById('detailContent').innerHTML = p.content.split('\n').map(x => x.trim()).filter(x => x).map(x => `<p style="margin-bottom:1.5rem;">${x}</p>`).join(''); showPage('blogDetail'); updateBlogDisplay(); } }
+        function createPost(e) { e.preventDefault(); const n = {id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1, title: document.getElementById('postTitle').value, date: document.getElementById('postDate').value, category: document.getElementById('postCategory').value, excerpt: document.getElementById('postExcerpt').value, content: document.getElementById('postContent').value, readTime: parseInt(document.getElementById('postReadTime').value), views: 0}; blogs.unshift(n); saveBlogsToFirebase(); e.target.reset(); showSuccess('✅ Post published!'); updateBlogDisplay(); }
+        function deletePost(id) { if (confirm('Delete?')) { blogs = blogs.filter(b => b.id !== id); saveBlogsToFirebase(); updateManageList(); } }
+        function updateManageList() { const l = document.getElementById('postsManageList'); if (!l) return; l.innerHTML = blogs.map(b => `<li style="background:var(--light-bg);padding:1.5rem;border-radius:8px;margin-bottom:1rem;border-left:4px solid var(--accent);display:flex;justify-content:space-between;align-items:flex-start;"><div><h4 style="color:var(--primary);margin-bottom:0.5rem;">${b.title}</h4><p style="color:var(--text-light);font-size:0.9rem;"><strong>Category:</strong> ${b.category}</p></div><button style="background:var(--accent);color:var(--white);padding:0.5rem 1rem;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;font-weight:600;" onclick="deletePost(${b.id})">Delete</button></li>`).join(''); }
+        function showSuccess(msg) { const a = document.getElementById('successAlert'); if (a) { a.textContent = msg; a.classList.add('show'); setTimeout(() => a.classList.remove('show'), 3000); } }
+        function switchTab(i) { const t = document.querySelectorAll('.tab-content'); const b = document.querySelectorAll('.tab-btn'); t.forEach((x, idx) => x.classList.toggle('active', idx === i)); b.forEach((x, idx) => x.classList.toggle('active', idx === i)); if (i === 1) updateManageList(); }
+
+        window.addEventListener('load', () => { initFirebase(); updateBlogDisplay(); updateAuthUI(); });
+        window.onclick = (e) => { const m = document.getElementById('loginModal'); if (e.target === m) closeLogin(); };
+    </script>
+
     <style>
+        :root { --primary: #0f172a; --secondary: #1e293b; --accent: #dc2626; --gold: #d4af37; --light-bg: #f8fafc; --white: #ffffff; --text: #334155; --text-light: #64748b; --border: #e2e8f0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #0f172a;
-            --secondary: #1e293b;
-            --accent: #dc2626;
-            --gold: #d4af37;
-            --light-bg: #f8fafc;
-            --white: #ffffff;
-            --text: #334155;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-        }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.6; background: var(--light-bg); }
 
         @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
 
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--white);
-            padding: 1.25rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            animation: slideInDown 0.5s ease;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--gold);
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
+        header { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--white); padding: 1.25rem 2rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); animation: slideInDown 0.5s ease; }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); cursor: pointer; transition: transform 0.3s ease; }
         .logo:hover { transform: scale(1.05); }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-            background: none;
-            border: none;
-            padding: 0;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: var(--white);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
+        .hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; background: none; border: none; }
+        .hamburger span { width: 25px; height: 3px; background: var(--white); border-radius: 2px; transition: all 0.3s ease; }
         .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(10px, 10px); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
@@ -85,608 +61,132 @@
         nav a { color: var(--white); text-decoration: none; font-weight: 500; cursor: pointer; transition: color 0.3s ease; }
         nav a:hover { color: var(--gold); }
 
-        .auth-section { display: flex; gap: 1rem; }
-        .login-btn { padding: 0.6rem 1.2rem; border: none; background: var(--accent); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3); }
-        .logout-btn { padding: 0.6rem 1.2rem; border: 1px solid var(--gold); background: transparent; color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .logout-btn:hover { background: var(--gold); color: var(--primary); }
-        .user-info { color: var(--gold); font-weight: 600; }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            background: var(--primary);
-            flex-direction: column;
-            padding: 1.5rem;
-            z-index: 99;
-            border-bottom: 4px solid var(--accent);
-        }
-
-        .mobile-menu.active { display: flex; }
-        .mobile-menu a { color: var(--white); text-decoration: none; padding: 1rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; font-weight: 500; }
-        .mobile-auth { padding: 1rem 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 1rem; }
-        .mobile-auth button { width: 100%; padding: 0.75rem; }
+        .mobile-menu { display: none; position: fixed; top: 0; right: -100%; width: 75%; max-width: 350px; height: 100vh; background: var(--primary); flex-direction: column; padding: 6rem 2rem 2rem; z-index: 99; border-left: 4px solid var(--accent); transition: right 0.3s ease; overflow-y: auto; box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2); }
+        .mobile-menu.active { right: 0; display: flex; }
+        .mobile-menu a { color: var(--white); text-decoration: none; padding: 1rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; font-weight: 500; font-size: 1.05rem; }
+        .mobile-auth { padding-top: 2rem; margin-top: 2rem; border-top: 2px solid rgba(255, 255, 255, 0.2); }
 
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: var(--white); padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; position: relative; animation: slideInUp 0.3s ease; }
+        .modal-content { background: var(--white); padding: 2.5rem; border-radius: 12px; max-width: 450px; width: 90%; animation: slideInUp 0.3s ease; }
         .modal-close { position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.5rem; cursor: pointer; background: none; border: none; }
         .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem; }
 
         .form-group { margin-bottom: 1.25rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease; }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; }
 
         .error-message { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
         .error-message.show { display: block; }
 
-        .btn-submit { width: 100%; background: var(--accent); color: var(--white); padding: 0.8rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-submit:hover { background: #b91c1c; transform: translateY(-2px); }
+        .btn-submit { width: 100%; background: var(--accent); color: var(--white); padding: 0.8rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
         .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
         .section { display: none; padding: 4rem 0; }
         .section.active { display: block; }
 
-        .hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #dc2626 100%);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: var(--white);
-            padding: 8rem 2rem;
-            text-align: center;
-            margin: -4rem 0 0 0;
-            position: relative;
-            overflow: hidden;
-        }
+        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #dc2626 100%); background-size: 400% 400%; animation: gradient 15s ease infinite; color: var(--white); padding: 8rem 2rem; text-align: center; margin: -4rem 0 0 0; position: relative; overflow: hidden; }
+        @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin-bottom: 0.5rem; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+        .hero .subtitle { font-size: 1.5rem; color: var(--gold); margin-bottom: 1.5rem; font-weight: 600; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); }
+        .hero p { font-size: 1.1rem; line-height: 1.8; color: #f1f5f9; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto; }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
-            opacity: 0.5;
-        }
+        .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 1rem 2rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        .btn-primary { background: var(--accent); color: var(--white); }
+        .btn-primary:hover { background: #b91c1c; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4); }
+        .btn-consultation { background: var(--gold); color: var(--primary); }
+        .btn-consultation:hover { background: #c9a940; transform: translateY(-4px); }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--primary); margin-bottom: 2rem; text-align: center; }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            animation: slideInUp 0.8s ease 0.3s backwards;
-        }
+        .featured-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 4rem; }
 
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
-            line-height: 1.1;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
+        .about-section { background: var(--white); padding: 4rem; border-radius: 12px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08); margin-bottom: 3rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: start; border-left: 6px solid var(--accent); }
+        .about-section h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--primary); margin-bottom: 1.5rem; }
+        .about-section p { color: var(--text-light); margin-bottom: 1.25rem; line-height: 1.9; font-size: 1.05rem; }
 
-        .hero .subtitle {
-            font-size: 1.5rem;
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
+        .badge { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: var(--white); padding: 1.5rem; border-radius: 10px; text-align: center; border-top: 4px solid var(--gold); margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .badge h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem; }
+        .badge p { font-size: 1.2rem; font-weight: 600; margin: 0; }
 
-        .hero p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #f1f5f9;
-            margin-bottom: 2rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 4rem; }
+        .stat-card { background: linear-gradient(135deg, var(--secondary), var(--primary)); padding: 2.5rem; border-radius: 12px; text-align: center; color: var(--white); border-top: 4px solid var(--gold); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-12px); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2); }
+        .stat-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: bold; color: var(--gold); margin-bottom: 0.5rem; }
+        .stat-label { font-size: 1rem; font-weight: 500; opacity: 0.95; }
 
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: #b91c1c;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
-        }
-
-        .btn-consultation {
-            background: var(--gold);
-            color: var(--primary);
-        }
-
-        .btn-consultation:hover {
-            background: #c9a940;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            text-align: center;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            border-radius: 2px;
-        }
-
-        .about-section {
-            background: var(--white);
-            padding: 4rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-            margin-bottom: 4rem;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 3rem;
-            align-items: center;
-            border-left: 6px solid var(--accent);
-            animation: slideInUp 0.8s ease;
-        }
-
-        .about-text h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .about-text p {
-            color: var(--text-light);
-            margin-bottom: 1.25rem;
-            line-height: 1.9;
-            font-size: 1.05rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            padding: 2.5rem;
-            border-radius: 12px;
-            text-align: center;
-            color: var(--white);
-            border-top: 4px solid var(--gold);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            transition: all 0.3s ease;
-            animation: slideInUp 0.8s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            font-weight: 500;
-            opacity: 0.95;
-            letter-spacing: 0.5px;
-        }
-
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-            margin-bottom: 4rem;
-        }
-
-        .featured-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2.5rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            border-left: 5px solid var(--accent);
-            transition: all 0.3s ease;
-            animation: slideInUp 0.8s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .featured-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--gold));
-        }
-
-        .featured-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .featured-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .featured-category {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--accent), #b91c1c);
-            color: var(--white);
-            padding: 0.4rem 1rem;
-            border-radius: 25px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .featured-meta {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.25rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .featured-excerpt {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        .featured-card::after {
-            content: '→';
-            position: absolute;
-            right: 2.5rem;
-            bottom: 2.5rem;
-            font-size: 1.5rem;
-            color: var(--accent);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .featured-card:hover::after {
-            opacity: 1;
-            transform: translateX(5px);
-        }
+        .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .portfolio-block { background: var(--white); padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--accent); }
+        .portfolio-block h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem; }
+        .portfolio-block ul { list-style: none; }
+        .portfolio-block li { padding: 0.75rem 0; color: var(--text); border-bottom: 1px solid var(--border); }
 
         .blog-list { list-style: none; }
 
-        .blog-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            border-left: 5px solid var(--accent);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .blog-card:hover {
-            transform: translateX(12px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .blog-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
-        }
-
-        .blog-category {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--accent), #b91c1c);
-            color: var(--white);
-            padding: 0.4rem 1rem;
-            border-radius: 25px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-
-        .blog-meta {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.25rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .blog-excerpt {
-            color: var(--text-light);
-            line-height: 1.7;
-        }
-
-        .dashboard {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 3rem;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-            border-top: 6px solid var(--accent);
-        }
-
-        .dashboard-header {
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .dashboard-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: var(--primary);
-        }
-
-        .tabs-container {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 1.25rem 2rem;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-light);
-            font-weight: 600;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--gold));
-            border-radius: 2px;
-        }
-
+        .dashboard { background: var(--white); border-radius: 10px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+        .dashboard-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .dashboard-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--primary); }
+        .tabs-container { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--border); }
+        .tab-btn { background: none; border: none; padding: 1rem 1.5rem; cursor: pointer; font-size: 0.95rem; color: var(--text-light); font-weight: 600; position: relative; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: var(--accent); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
         .form-grid.full { grid-template-columns: 1fr; }
         .form-group textarea { resize: vertical; min-height: 120px; }
 
-        .success-alert {
-            background: linear-gradient(135deg, #dcfce7, #d1fae5);
-            color: #166534;
-            padding: 1.25rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            display: none;
-            border-left: 4px solid #10b981;
-        }
+        .success-alert { background: #dcfce7; color: #166534; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: none; border-left: 4px solid #10b981; }
+        .success-alert.show { display: block; }
 
-        .success-alert.show { display: block; animation: slideInDown 0.3s ease; }
+        .btn-group { display: flex; gap: 1rem; margin-top: 2rem; }
+        .btn-submit-form { background: var(--accent); color: var(--white); padding: 0.75rem 2rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-reset { background: var(--light-bg); color: var(--primary); padding: 0.75rem 2rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+        footer { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--white); text-align: center; padding: 3rem 2rem; margin-top: 4rem; border-top: 6px solid var(--accent); }
+        footer a { color: var(--gold); text-decoration: none; }
 
-        .btn-submit-form {
-            background: linear-gradient(135deg, var(--accent), #b91c1c);
-            color: var(--white);
-            padding: 0.9rem 2.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-submit-form:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn-reset {
-            background: var(--light-bg);
-            color: var(--primary);
-            padding: 0.9rem 2.5rem;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-reset:hover {
-            background: var(--border);
-            border-color: var(--primary);
-        }
-
-        .posts-list { list-style: none; }
-
-        .post-item {
-            background: linear-gradient(135deg, var(--light-bg), var(--white));
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--accent);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .post-item:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            transform: translateY(-4px);
-        }
-
-        .post-info h4 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1.1rem; }
-        .post-info p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 0.5rem; }
-
-        .btn-delete {
-            background: linear-gradient(135deg, var(--accent), #b91c1c);
-            color: var(--white);
-            padding: 0.6rem 1.25rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
-        }
-
-        footer {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 6px solid var(--accent);
-        }
-
-        footer a { color: var(--gold); text-decoration: none; transition: color 0.3s ease; }
-        footer a:hover { color: var(--white); }
-
-        .status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            z-index: 999;
-            border-left: 4px solid #10b981;
-        }
+        .status { position: fixed; bottom: 20px; right: 20px; background: #dcfce7; color: #166534; padding: 1rem 1.5rem; border-radius: 8px; font-size: 0.9rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); z-index: 999; border-left: 4px solid #10b981; }
 
         @media (max-width: 768px) {
             .hamburger { display: flex; }
             nav { display: none; }
-            .auth-section { display: none; }
-            .hero { padding: 3rem 1.5rem; margin: -3rem 0 2rem 0; }
-            .hero h1 { font-size: 2.5rem; }
-            .hero .subtitle { font-size: 1.1rem; }
-            .cta-group { flex-direction: column; }
-            .cta-group .btn { width: 100%; }
             .about-section { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
             .featured-grid { grid-template-columns: 1fr; }
             .portfolio-grid { grid-template-columns: 1fr; }
             .form-grid { grid-template-columns: 1fr; }
             .container { padding: 0 1rem; }
-            .section-title { font-size: 1.8rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .cta-group { flex-direction: column; }
+            .cta-group .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="status" id="status">✅ Ready</div>
+    <div class="status">✅ Ready</div>
 
     <header>
         <div class="nav-container">
-            <a class="logo" onclick="showHome()">OA</a>
-            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <a class="logo" onclick="showPage('home')">OA</a>
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
             <nav>
-                <a onclick="showHome()">Home</a>
+                <a onclick="showPage('home')">Home</a>
                 <a onclick="showPage('portfolio')">Portfolio</a>
                 <a onclick="showPage('blog')">Blog</a>
+                <a style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="openLogin()">Login</a>
             </nav>
-            <div class="auth-section" id="desktopAuth">
-                <button class="login-btn" onclick="openLogin()">Login</button>
-            </div>
         </div>
 
         <div class="mobile-menu" id="mobileMenu">
-            <a onclick="showHome(); closeMenu();">Home</a>
-            <a onclick="showPage('portfolio'); closeMenu();">Portfolio</a>
-            <a onclick="showPage('blog'); closeMenu();">Blog</a>
+            <a onclick="showPage('home');closeMenu();">Home</a>
+            <a onclick="showPage('portfolio');closeMenu();">Portfolio</a>
+            <a onclick="showPage('blog');closeMenu();">Blog</a>
             <div class="mobile-auth" id="mobileAuth">
-                <button class="login-btn" onclick="openLogin(); closeMenu();">Login</button>
+                <button style="width:100%;padding:0.75rem;border:none;background:var(--accent);color:var(--white);border-radius:6px;cursor:pointer;font-weight:600;" onclick="openLogin()">Login</button>
             </div>
         </div>
     </header>
@@ -694,448 +194,113 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeLogin()">✕</button>
-            <div class="modal-header">
-                <h2>Admin Login</h2>
-            </div>
+            <div class="modal-header"><h2>Admin Login</h2></div>
             <form onsubmit="handleLogin(event)">
                 <div class="error-message" id="errorMsg"></div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="username" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" required>
-                </div>
+                <div class="form-group"><label>Username</label><input type="text" id="username" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="password" required></div>
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
         </div>
     </div>
 
     <div class="container">
-        <!-- HOME -->
         <section id="home" class="section active">
             <div class="hero">
-                <div class="hero-content">
-                    <h1>Olalekan Adepoju</h1>
-                    <p class="subtitle">PhD in Rhetoric & Composition</p>
-                    <p>Empowering writers through transnational pedagogy and decolonizing academic spaces for international and multilingual students.</p>
-                    <div class="cta-group">
-                        <a onclick="showPage('blog')" class="btn btn-primary">📖 Read Blog</a>
-                        <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
-                    </div>
+                <h1>Olalekan Adepoju</h1>
+                <p class="subtitle">PhD in Rhetoric & Composition</p>
+                <p>Empowering writers through transnational pedagogy and decolonizing academic spaces for international and multilingual students.</p>
+                <div class="cta-group">
+                    <a onclick="showPage('blog')" class="btn btn-primary">📖 Read Blog</a>
+                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation">📅 Book Consultation</a>
                 </div>
             </div>
 
             <div class="about-section">
-                <div class="about-text">
+                <div>
                     <h2>About Me</h2>
                     <p>I am an educator and researcher specializing in rhetoric, composition, and international writing pedagogy. With a PhD from the University of Louisville, my work focuses on empowering multilingual writers and decolonizing academic writing spaces through transnational approaches.</p>
                     <p>Currently serving as an Instructor at the College of Staten Island, CUNY, I design courses that recognize linguistic diversity as an asset. My research explores how writing instruction can better serve international and multilingual students.</p>
                 </div>
                 <div>
-                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Specialization</h3>
-                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Writing Pedagogy</p>
-                    </div>
-                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Research Focus</h3>
-                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Transnational Writing</p>
-                    </div>
-                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--gold); margin-bottom: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-                        <h3 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.75rem;">Current Position</h3>
-                        <p style="font-size: 1.2rem; font-weight: 600; margin: 0;">Instructor, CUNY</p>
-                    </div>
+                    <div class="badge"><h3>Specialization</h3><p>Writing Pedagogy</p></div>
+                    <div class="badge"><h3>Research Focus</h3><p>Transnational Writing</p></div>
+                    <div class="badge"><h3>Position</h3><p>Instructor, CUNY</p></div>
+                    <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank" class="btn btn-consultation" style="width:100%;text-align:center;margin-top:1rem;">📅 Book Consultation</a>
                 </div>
             </div>
 
             <h2 class="section-title">Professional Highlights</h2>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Peer-Reviewed Publications</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">20+</div>
-                    <div class="stat-label">Conference Presentations</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">1000+</div>
-                    <div class="stat-label">Students Impacted</div>
-                </div>
+                <div class="stat-card"><div class="stat-number">15+</div><div class="stat-label">Peer-Reviewed Publications</div></div>
+                <div class="stat-card"><div class="stat-number">20+</div><div class="stat-label">Conference Presentations</div></div>
+                <div class="stat-card"><div class="stat-number">1000+</div><div class="stat-label">Students Impacted</div></div>
             </div>
 
             <h2 class="section-title">Featured Articles</h2>
-            <div class="featured-grid" id="featuredPosts">
-                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">Loading articles...</div>
-            </div>
+            <div class="featured-grid" id="featuredPosts"><div style="grid-column:1/-1;text-align:center;padding:2rem;">Loading...</div></div>
         </section>
 
-        <!-- PORTFOLIO -->
         <section id="portfolio" class="section">
             <h2 class="section-title">Professional Portfolio</h2>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
-                <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--accent);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem;">🎓 Education</h3>
-                    <ul style="list-style: none;">
-                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border); color: var(--text);"><strong>PhD Rhetoric & Composition</strong><br><small style="color: var(--text-light);">University of Louisville, 2023</small></li>
-                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border); color: var(--text);"><strong>M.A. English Language</strong><br><small style="color: var(--text-light);">University of Ibadan, Nigeria, 2015</small></li>
-                        <li style="padding: 0.75rem 0; color: var(--text);"><strong>B.A. English Language & Education</strong><br><small style="color: var(--text-light);">University of Ilorin, Nigeria, 2012</small></li>
-                    </ul>
+            <div class="portfolio-grid">
+                <div class="portfolio-block">
+                    <h3>🎓 Education</h3>
+                    <ul><li>PhD Rhetoric & Composition - University of Louisville, 2023</li><li>M.A. English Language - University of Ibadan, 2015</li><li>B.A. English Language & Education - University of Ilorin, 2012</li></ul>
                 </div>
-
-                <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--gold);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary); margin-bottom: 1.5rem;">🔬 Research Areas</h3>
-                    <ul style="list-style: none;">
-                        <li style="padding: 0.5rem 0;">▸ Transnational Writing Pedagogy</li>
-                        <li style="padding: 0.5rem 0;">▸ Multilingual Writing Practices</li>
-                        <li style="padding: 0.5rem 0;">▸ Writing Center Administration</li>
-                        <li style="padding: 0.5rem 0;">▸ Rhetorical Genre Analysis</li>
-                        <li style="padding: 0.5rem 0;">▸ Decolonizing Academic Writing</li>
-                        <li style="padding: 0.5rem 0;">▸ Discourse & Sociolinguistics</li>
-                    </ul>
+                <div class="portfolio-block">
+                    <h3>🔬 Research Focus</h3>
+                    <ul><li>Transnational Writing Pedagogy</li><li>Multilingual Writing Practices</li><li>Writing Center Administration</li><li>Decolonizing Academic Writing</li></ul>
                 </div>
             </div>
         </section>
 
-        <!-- BLOG -->
         <section id="blog" class="section">
             <h2 class="section-title">Blog</h2>
-            <ul class="blog-list" id="blogList">
-                <li style="text-align: center; padding: 3rem; color: var(--text-light);">Loading posts...</li>
-            </ul>
+            <ul class="blog-list" id="blogList"><li style="text-align:center;padding:3rem;">Loading posts...</li></ul>
         </section>
 
-        <!-- DASHBOARD -->
+        <section id="blogDetail" class="section">
+            <div style="background:var(--white);border-radius:12px;padding:3rem;box-shadow:0 8px 40px rgba(0,0,0,0.08);max-width:900px;margin:0 auto;">
+                <button style="background:transparent;color:var(--accent);border:none;cursor:pointer;font-weight:600;font-size:0.95rem;margin-bottom:2rem;padding:0;" onclick="showPage('blog')">← Back to Blog</button>
+                <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--primary);margin-bottom:1.5rem;" id="detailTitle"></h1>
+                <div style="display:flex;gap:1.5rem;margin-bottom:2rem;font-size:0.95rem;color:var(--text-light);" id="detailMeta"></div>
+                <span style="display:inline-block;background:var(--accent);color:var(--white);padding:0.4rem 1rem;border-radius:25px;font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-bottom:2rem;" id="detailCategory"></span>
+                <div style="color:var(--text);line-height:2;font-size:1.05rem;margin-top:2rem;" id="detailContent"></div>
+            </div>
+        </section>
+
         <section id="dashboard" class="section">
             <div class="dashboard">
-                <div class="dashboard-header">
-                    <h2>Blog Management Dashboard</h2>
-                    <p style="color: var(--text-light); margin-top: 0.5rem;">Create and manage your blog posts</p>
-                </div>
-
+                <div class="dashboard-header"><h2>Blog Management Dashboard</h2></div>
                 <div class="tabs-container">
                     <button class="tab-btn active" onclick="switchTab(0)">Create Post</button>
                     <button class="tab-btn" onclick="switchTab(1)">Manage Posts</button>
                 </div>
-
                 <div class="tab-content active">
                     <div class="success-alert" id="successAlert"></div>
                     <form onsubmit="createPost(event)">
-                        <div class="form-grid full">
-                            <div class="form-group">
-                                <label>Post Title *</label>
-                                <input type="text" id="postTitle" required>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Date *</label>
-                                <input type="date" id="postDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Category *</label>
-                                <select id="postCategory" required>
-                                    <option value="">Select</option>
-                                    <option value="Writing Pedagogy">Writing Pedagogy</option>
-                                    <option value="Composition Studies">Composition Studies</option>
-                                    <option value="International Writing">International Writing</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-grid full">
-                            <div class="form-group">
-                                <label>Excerpt *</label>
-                                <textarea id="postExcerpt" required></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-grid full">
-                            <div class="form-group">
-                                <label>Content *</label>
-                                <textarea id="postContent" required></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Read Time (minutes) *</label>
-                                <input type="number" id="postReadTime" min="1" value="5" required>
-                            </div>
-                        </div>
-
-                        <div class="btn-group">
-                            <button type="submit" class="btn-submit-form">Publish Post</button>
-                            <button type="reset" class="btn-reset">Clear Form</button>
-                        </div>
+                        <div class="form-grid full"><div class="form-group"><label>Post Title *</label><input type="text" id="postTitle" required></div></div>
+                        <div class="form-grid"><div class="form-group"><label>Date *</label><input type="date" id="postDate" required></div><div class="form-group"><label>Category *</label><select id="postCategory" required><option value="">Select</option><option value="Writing Pedagogy">Writing Pedagogy</option><option value="Composition Studies">Composition Studies</option><option value="International Writing">International Writing</option></select></div></div>
+                        <div class="form-grid full"><div class="form-group"><label>Excerpt *</label><textarea id="postExcerpt" required></textarea></div></div>
+                        <div class="form-grid full"><div class="form-group"><label>Content *</label><textarea id="postContent" required></textarea></div></div>
+                        <div class="form-grid"><div class="form-group"><label>Read Time (min) *</label><input type="number" id="postReadTime" min="1" value="5" required></div></div>
+                        <div class="btn-group"><button type="submit" class="btn-submit-form">Publish Post</button><button type="reset" class="btn-reset">Clear Form</button></div>
                     </form>
                 </div>
-
-                <div class="tab-content">
-                    <ul class="posts-list" id="postsManageList">
-                        <li style="text-align: center; padding: 2rem;">Loading...</li>
-                    </ul>
-                </div>
+                <div class="tab-content"><ul class="posts-list" id="postsManageList"><li style="text-align:center;padding:2rem;">Loading...</li></ul></div>
             </div>
         </section>
     </div>
 
     <footer>
-        <p style="font-size: 1.2rem;"><strong>Olalekan Tunde Adepoju, PhD</strong></p>
+        <p style="font-size:1.2rem;"><strong>Olalekan Tunde Adepoju, PhD</strong></p>
         <p>Educator | Researcher | Writing Specialist</p>
-        <p style="margin-top: 1.5rem;">
+        <p style="margin-top:1.5rem;">
             <a href="mailto:olalekanadepoju18@gmail.com">📧 Email</a> | 
             <a href="tel:+15025316870">📱 (502) 531-6870</a> | 
             <a href="https://calendly.com/olalekan-adepoju55/free-consultation" target="_blank">📅 Book Consultation</a>
         </p>
-        <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">© 2024 Olalekan Adepoju. All rights reserved.</p>
     </footer>
-
-    <script>
-        let blogs = [{
-            id: 1,
-            title: "Transnational Writing Pedagogy",
-            date: "2024-01-15",
-            category: "Writing Pedagogy",
-            excerpt: "Exploring how writing centers can serve international students.",
-            content: "Writing centers have traditionally focused on helping students conform to Standard English conventions.",
-            readTime: 8,
-            views: 5
-        }];
-
-        let isLoggedIn = false;
-        let db = null;
-
-        function initFirebase() {
-            if (typeof firebase === 'undefined') {
-                setTimeout(initFirebase, 100);
-                return;
-            }
-
-            try {
-                const config = {
-                    apiKey: "AIzaSyC8KMYygt_GwaJbTR6HGe6lEtdMRlS4Zok",
-                    authDomain: "olalekan-adepoju.firebaseapp.com",
-                    databaseURL: "https://olalekan-adepoju-default-rtdb.firebaseio.com",
-                    projectId: "olalekan-adepoju",
-                    storageBucket: "olalekan-adepoju.firebasestorage.app",
-                    messagingSenderId: "1065010888647",
-                    appId: "1:1065010888647:web:32620c897c385c2f17a3e2"
-                };
-
-                if (firebase.apps.length === 0) {
-                    firebase.initializeApp(config);
-                }
-                db = firebase.database();
-                loadBlogs();
-            } catch (e) {
-                console.error('Firebase error:', e);
-            }
-        }
-
-        function loadBlogs() {
-            if (!db) return;
-            db.ref('blogs').once('value', snap => {
-                if (snap.exists()) {
-                    blogs = Object.values(snap.val());
-                }
-                updateBlogDisplay();
-            });
-        }
-
-        function saveBlogsToFirebase() {
-            if (!db) return;
-            const obj = {};
-            blogs.forEach(b => obj[b.id] = b);
-            db.ref('blogs').set(obj);
-        }
-
-        function updateBlogDisplay() {
-            const list = document.getElementById('blogList');
-            list.innerHTML = blogs.map(b => `
-                <li class="blog-card" onclick="viewPost(${b.id})">
-                    <h3 class="blog-title">${b.title}</h3>
-                    <span class="blog-category">${b.category}</span>
-                    <div class="blog-meta">
-                        <span>📅 ${new Date(b.date).toLocaleDateString()}</span>
-                        <span>⏱ ${b.readTime} min</span>
-                        <span>👁 ${b.views} views</span>
-                    </div>
-                    <p class="blog-excerpt">${b.excerpt}</p>
-                </li>
-            `).join('');
-
-            updateFeaturedPosts();
-        }
-
-        function updateFeaturedPosts() {
-            const featured = document.getElementById('featuredPosts');
-            const top3 = [...blogs].sort((a, b) => b.views - a.views).slice(0, 3);
-            
-            featured.innerHTML = top3.map(b => `
-                <div class="featured-card" onclick="viewPost(${b.id})">
-                    <span class="featured-category">${b.category}</span>
-                    <h3 class="featured-title">${b.title}</h3>
-                    <div class="featured-meta">
-                        <span>📅 ${new Date(b.date).toLocaleDateString()}</span>
-                        <span>⏱ ${b.readTime} min</span>
-                    </div>
-                    <p class="featured-excerpt">${b.excerpt}</p>
-                </div>
-            `).join('');
-        }
-
-        function viewPost(id) {
-            const post = blogs.find(b => b.id === id);
-            if (post) {
-                post.views++;
-                saveBlogsToFirebase();
-                alert(`${post.title}\n\n${post.content}`);
-                updateBlogDisplay();
-            }
-        }
-
-        function createPost(e) {
-            e.preventDefault();
-            const newPost = {
-                id: blogs.length ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
-                title: document.getElementById('postTitle').value,
-                date: document.getElementById('postDate').value,
-                category: document.getElementById('postCategory').value,
-                excerpt: document.getElementById('postExcerpt').value,
-                content: document.getElementById('postContent').value,
-                readTime: parseInt(document.getElementById('postReadTime').value),
-                views: 0
-            };
-
-            blogs.unshift(newPost);
-            saveBlogsToFirebase();
-            e.target.reset();
-            showSuccess('✅ Post published!');
-            updateBlogDisplay();
-        }
-
-        function deletePost(id) {
-            if (confirm('Delete this post?')) {
-                blogs = blogs.filter(b => b.id !== id);
-                saveBlogsToFirebase();
-                updateManageList();
-            }
-        }
-
-        function updateManageList() {
-            const list = document.getElementById('postsManageList');
-            list.innerHTML = blogs.map(b => `
-                <li class="post-item">
-                    <div class="post-info">
-                        <h4>${b.title}</h4>
-                        <p><strong>Category:</strong> ${b.category}</p>
-                        <p><strong>Views:</strong> ${b.views}</p>
-                    </div>
-                    <button class="btn-delete" onclick="deletePost(${b.id})">Delete</button>
-                </li>
-            `).join('');
-        }
-
-        function showSuccess(msg) {
-            const alert = document.getElementById('successAlert');
-            alert.textContent = msg;
-            alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 3000);
-        }
-
-        function openLogin() {
-            document.getElementById('loginModal').classList.add('active');
-        }
-
-        function closeLogin() {
-            document.getElementById('loginModal').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('errorMsg').classList.remove('show');
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-
-            if (user === 'admin' && pass === 'password123') {
-                isLoggedIn = true;
-                closeLogin();
-                updateAuthUI();
-                showPage('dashboard');
-                showSuccess('✅ Logged in!');
-            } else {
-                document.getElementById('errorMsg').textContent = '❌ Invalid credentials';
-                document.getElementById('errorMsg').classList.add('show');
-            }
-        }
-
-        function updateAuthUI() {
-            const desktop = document.getElementById('desktopAuth');
-            const mobile = document.getElementById('mobileAuth');
-            
-            if (isLoggedIn) {
-                desktop.innerHTML = `<span class="user-info">👤 admin</span><button class="logout-btn" onclick="logout()">Logout</button>`;
-                mobile.innerHTML = `<span class="user-info">👤 admin</span><button class="logout-btn" onclick="logout()">Logout</button>`;
-            } else {
-                desktop.innerHTML = `<button class="login-btn" onclick="openLogin()">Login</button>`;
-                mobile.innerHTML = `<button class="login-btn" onclick="openLogin(); closeMenu();">Login</button>`;
-            }
-        }
-
-        function logout() {
-            isLoggedIn = false;
-            updateAuthUI();
-            showHome();
-        }
-
-        function toggleMenu() {
-            document.getElementById('hamburger').classList.toggle('active');
-            document.getElementById('mobileMenu').classList.toggle('active');
-        }
-
-        function closeMenu() {
-            document.getElementById('hamburger').classList.remove('active');
-            document.getElementById('mobileMenu').classList.remove('active');
-        }
-
-        function showHome() {
-            showPage('home');
-        }
-
-        function showPage(id) {
-            if (id === 'dashboard' && !isLoggedIn) {
-                openLogin();
-                return;
-            }
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            closeMenu();
-        }
-
-        function switchTab(i) {
-            const tabs = document.querySelectorAll('.tab-content');
-            const btns = document.querySelectorAll('.tab-btn');
-            tabs.forEach((t, idx) => t.classList.toggle('active', idx === i));
-            btns.forEach((b, idx) => b.classList.toggle('active', idx === i));
-            if (i === 1) updateManageList();
-        }
-
-        window.addEventListener('load', () => {
-            initFirebase();
-            updateBlogDisplay();
-            updateAuthUI();
-        });
-
-        window.onclick = (e) => {
-            const modal = document.getElementById('loginModal');
-            if (e.target === modal) closeLogin();
-        };
-    </script>
 </body>
 </html>
